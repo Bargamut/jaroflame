@@ -1,0 +1,41 @@
+/* CSS Document */
+
+.caption img{height:24px;cursor:pointer;}
+.caption img:hover{height:30px;}
+
+.cards{
+	list-style:none;
+	padding:0px;
+	margin:0px;
+}
+.cards li{
+	height:80px;
+	list-style:none;
+	padding:5px 0 5px 0;
+	margin:10px 0 10px 0;
+	border:1px #000000 dashed;
+	cursor:pointer;
+}
+.cards li:hover{background:#f3eeed;}
+.cards li a{color:inherit; text-decoration:none;}
+
+.ccaption{
+	font-weight:bold;
+	vertical-align:middle;
+	padding:5px;
+	height:24px;
+}
+.ccaption img{
+	height:24px;
+	margin:-2px 0 0 5px;
+	cursor:pointer;
+}
+.ccaption img:hover{height:30px;}
+.ccontent{padding:5px;}
+
+.ava{
+	border:0px;
+	width:170px;
+	height:80px;
+	margin:0 15px 0 5px;
+}

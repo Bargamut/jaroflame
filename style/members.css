@@ -1,0 +1,41 @@
+/* CSS Document */
+
+.member{
+	width:49%;
+	padding:5px 0 5px 0;
+	margin:10px 0 10px 0;
+	border:1px #000000 dashed;
+	text-align:center;
+	float:left;
+}
+.member:hover{background-color:#f3eeed; cursor:pointer;}
+.member a{color:inherit; text-decoration:none; height:80px;}
+
+.mcaption{
+	font-weight:bold;
+	vertical-align:middle;
+	padding:5px;
+	height:24px;
+}
+.mcaption img{
+	height:24px;
+	margin:-2px 0 0 5px;
+	cursor:pointer;
+}
+.mcaption img:hover{height:30px;}
+.mcontent{padding:5px;}
+
+.ava{
+	width:147px;
+	height:186px;
+	margin:0px;
+	border:1px solid #CCC;
+}
+
+.capt{width:900px;}
+.cont{width:900px; height:400px;}
+
+.subcont{
+	padding:0 0 0 20px;
+	margin:0 0 0 160px;}
+.subcont li div{margin:0 0 0 14px;}
