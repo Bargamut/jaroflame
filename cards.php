@@ -15,7 +15,7 @@
     <?php include('inc/header.php');?>
 </table>
 <table border="0" cellpadding="0" cellspacing="0" align="center">
-    <?php include('inc/body.php');?>
+    <?=$objPage->getPage('cards',$_GET['p'])?>
 </table>
 <table border="0" cellpadding="0" cellspacing="0" align="center">
     <?php include('inc/footer.php');?>

@@ -7,7 +7,7 @@ switch($script){
 	case 'cards.php':
 		$pages_query = db_select('cards','*','no','`id`');
 		break;
-	case 'fest.php':
+	case 'fests.php':
 		$pages_query = db_select('fest','*','`page` = "'.$script.'"','`id`');
 		break;
 	case 'members.php':
@@ -16,13 +16,13 @@ switch($script){
 	case 'news.php':
 		$pages_query = db_select('news','*','no','`date` desc');
 		break;
-	case 'source.php':
+	case 'sources.php':
 		$pages_query = db_select('source','*','`page` = "'.$script.'"','`id`');
 		break;
 	case 'treasury.php':
 		$pages_query = db_select('treasury','*','`page` = "'.$script.'"','`id`');
 		break;
-	case 'work.php':
+	case 'works.php':
 		$pages_query = db_select('work','*','`page` = "'.$script.'"','`id`');
 		break;
 	default:
@@ -79,7 +79,7 @@ while($arr_pages = mysql_fetch_array($pages_query,MYSQL_ASSOC)){
 			</div>
             <?php
 			break;
-		case 'fest.php':
+		case 'fests.php':
 			
 			break;
 		case 'members.php':?>
@@ -128,10 +128,10 @@ while($arr_pages = mysql_fetch_array($pages_query,MYSQL_ASSOC)){
 			</div>
 			<?php
 			break;
-		case 'source.php':
+		case 'sources.php':
 			
 			break;
-		case 'work.php':
+		case 'works.php':
 			
 			break;
 		default:

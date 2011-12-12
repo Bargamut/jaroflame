@@ -24,4 +24,5 @@ include('classes/classes.php'); // Подключение списка клас�
 include('objects/objects.php'); // Создание объектов классов
 include('functions/dbfunctions.php'); // Функции работы с БД
 include('functions/functions.php'); // Функции сайта
+include('functions/api.pages.php'); // API ввод-вывод страниц
 ?>
