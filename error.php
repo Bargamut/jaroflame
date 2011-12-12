@@ -10,16 +10,9 @@
 
 <?php include_once('inc/modules/jsframework.php');?>
 
-<body>
-<table border="0" cellpadding="0" cellspacing="0" align="center">
-    <?php include('inc/header.php');?>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" align="center">
-    <?php include('inc/body.php');?>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" align="center">
-    <?php include('inc/footer.php');?>
-</table>
+<body style="text-align: center;">
+    <img src="/img/default/logo3.png" align="top" /><br />
+    <?=$errors[$_GET['t']]?>
 </body>
 </html>
 <?php include('inc/bottom.php');?>

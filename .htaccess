@@ -6,7 +6,7 @@ AddCharset utf-8 *
     CharsetDefault utf-8
 </IfModule>
 
-ErrorDocument 401 /401.php 
-ErrorDocument 403 /403.php 
-ErrorDocument 404 /404.php 
-ErrorDocument 500 /500.php
+ErrorDocument 401 /error.php?t=401
+ErrorDocument 403 /error.php?t=403
+ErrorDocument 404 /error.php?t=404
+ErrorDocument 500 /error.php?t=500

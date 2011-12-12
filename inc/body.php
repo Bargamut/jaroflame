@@ -1,28 +1,28 @@
 <?php
-$script = basename($_SERVER['PHP_SELF']);
+$script = $_GET['s'];
 switch($script){
-	case 'awards.php':
+	case 'awards':
 		$pages_query = db_select('awards','*','`page` = "'.$script.'"','`id`');
 		break;
-	case 'cards.php':
+	case 'cards':
         (isset($_GET['p'])||$_GET['p'] != '') ? $where = '`id` = "'.htmlspecialchars($_GET['p']).'"' : $where = 'no';
 		$pages_query = db_select('cards','*',$where,'`id`');
 		break;
-	case 'fest.php':
+	case 'fest':
 		$pages_query = db_select('fest','*','`page` = "'.$script.'"','`id`');
 		break;
-	case 'members.php':
+	case 'members':
 		(isset($_GET['q'])||$_GET['q'] != '') ? $where = '`id` = "'.htmlspecialchars($_GET['q']).'"' : $where = 'no';
 		$pages_query = db_select('members','*',$where,'`id`');
 		break;
-	case 'news.php':
+	case 'news':
 		(isset($_GET['q'])||$_GET['q'] != '') ? $where = '`id` = "'.htmlspecialchars($_GET['q']).'"' : $where = 'no';
 		$pages_query = db_select('news','*',$where,'`date` desc');
 		break;
-	case 'source.php':
+	case 'source':
 		$pages_query = db_select('source','*','`page` = "'.$script.'"','`id`');
 		break;
-	case 'work.php':
+	case 'work':
 		$pages_query = db_select('work','*','`page` = "'.$script.'"','`id`');
 		break;
 	default:
@@ -50,10 +50,8 @@ while($arr_pages = mysql_fetch_array($pages_query,MYSQL_ASSOC)){
 <tr><td width="900px" valign="top">
     <?php
 	switch($script){
-		case 'awards.php':
-			
-			break;
-		case 'cards.php':
+		case 'awards':break;
+		case 'cards':
         	if(!isset($_GET['p'])||$_GET['p']==''){?>
                 <div class="caption">Паспорта</div>
                 <div class="content">
@@ -70,7 +68,7 @@ while($arr_pages = mysql_fetch_array($pages_query,MYSQL_ASSOC)){
                         <div class="ccontent"><?=$value['caption'];?></div>
                         </a>
                     </li>
-                <?php 
+                <?php
                 endforeach;
                 }?>
                     </ul>
@@ -85,15 +83,13 @@ while($arr_pages = mysql_fetch_array($pages_query,MYSQL_ASSOC)){
 					<div class="content">
 						<?=$value['content'];?>
 					</div>
-				<?php 
+				<?php
 				endforeach;
 				}
 			}
 			break;
-		case 'fest.php':
-			
-			break;
-		case 'members.php':
+		case 'fest':break;
+		case 'members':
         	if(!isset($_GET['q']) || $_GET['q'] == ''){?>
                 <div class="caption">Состав</div>
                 <div class="content">
@@ -107,7 +103,7 @@ while($arr_pages = mysql_fetch_array($pages_query,MYSQL_ASSOC)){
                             </div>
                         </a>
                     </div>
-                <?php 
+                <?php
                 endforeach;?>
                 </div>
             <?php
@@ -127,11 +123,11 @@ while($arr_pages = mysql_fetch_array($pages_query,MYSQL_ASSOC)){
                                     <div><?=$value['fests'];?></li>
                             </ul>
                     </div>
-                <?php 
+                <?php
                 endforeach;
 			}
             break;
-		case 'news.php':?>
+		case 'news':?>
 			<div class="caption">Новости</div>
 			<div class="content">
             <ul class="news">
@@ -143,18 +139,14 @@ while($arr_pages = mysql_fetch_array($pages_query,MYSQL_ASSOC)){
                     <div class="nnick"><?=$value['nick'];?></div>
                     <div class="ndate"><?=$value['date'];?></div>
 				</li>
-			<?php 
+			<?php
 			endforeach;?>
             </ul>
 			</div>
 			<?php
 			break;
-		case 'source.php':
-			
-			break;
-		case 'work.php':
-			
-			break;
+		case 'source':break;
+		case 'work':break;
 		default:
 			foreach($pages as $key => $value):?>
 			<div class="caption"><?=$value['caption']?></div>
@@ -167,7 +159,7 @@ while($arr_pages = mysql_fetch_array($pages_query,MYSQL_ASSOC)){
 	<div class="content">
 	<?php
     switch ($script){
-		case 'callback.php':?>
+		case 'callback':?>
 			<form name="frm_callback" class="frm_callback" method="post" action="">
                 <input id="u_fio" name="u_fio"
                 	type="text"
