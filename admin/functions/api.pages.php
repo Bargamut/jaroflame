@@ -60,27 +60,27 @@ class Pages{
             case 'awards':
                 break;
             case 'cards':
-                if(!isset($pID) || $pID == ''){
-                    $result .= '<div class="caption">Паспорта</div>'.
+                /*if(!isset($pID) || $pID == ''){*/
+                    $result .= '<div class="caption">Паспорта<img class="add" src="img/default/add.png" align="right" title="Создать" /></div>'.
                                '<div class="content">
                                     <ul class="cards">';
 
                     if(count($pages) != 0){
                         foreach($pages as $key => $value){
                             $result .= '<li id="cards'.$value['id'].'">
-                                <a href="/cards.php?p='.$value['id'].'">
-                                    <img class="ava" src="/img/cards/test/thumb/'.$value['avatar'].'" align="left" />
-                                    <div id="'.$value['id'].'" class="ccaption">
-                                        <span>'.$value['lname'].' "'.$value['nick'].'" '.$value['name'].'</span>
-                                    </div>
-                                    <div class="ccontent">'.$value['caption'].'</div>
-                                </a>
+                                <img class="ava" src="/img/cards/test/thumb/'.$value['avatar'].'" align="left" />
+                                <div id="'.$value['id'].'" class="ccaption">
+                                    <span>'.$value['lname'].' "'.$value['nick'].'" '.$value['name'].'</span>
+                                    <img class="del" src="img/default/del.png" align="right" title="Удалить" />
+                                    <img class="edit" src="img/default/edit.png" align="right" title="Редактировать" />
+                                </div>
+                                <div class="ccontent">'.$value['caption'].'</div>
                             </li>';
                         }
                     }
                     $result .= '</ul>
                     </div>';
-                }else{
+                /*}else{
                     if(count($pages) != 0){
                         foreach($pages as $key => $value){
                             $result .= '<div class="caption">'.
@@ -91,27 +91,27 @@ class Pages{
                         </div>';
                         }
                     }
-                }
+                }*/
                 break;
             case 'fests':
                 break;
             case 'members':
-                if(!isset($pID) || $pID == ''){
-                    $result .= '<div class="caption">Состав</div>'.
+                /*if(!isset($pID) || $pID == ''){*/
+                    $result .= '<div class="caption">Состав<img class="add" src="img/default/add.png" align="right" title="Создать" /></div>'.
                                '<div class="content">';
 
                     foreach($pages as $key => $value){
                         $result .= '<div id="members'.$value['id'].'" class="member">
-                            <a href="/members.php?q='.$value['id'].'" >
-                                <img class="ava" src="'.$value['avatar'].'" align="top" />
-                                <div id="'.$value['id'].'" class="mcaption">
-                                    <span>'.$value['lname'].' "'.$value['nick'].'" '.$value['name'].'</span>
-                                </div>
-                            </a>
+                            <img class="ava" src="'.$value['avatar'].'" align="top" />
+                            <div id="'.$value['id'].'" class="mcaption">
+                                <span>'.$value['lname'].' "'.$value['nick'].'" '.$value['name'].'</span>
+                                <img class="del" src="img/default/del.png" align="right" title="Удалить" />
+                                <img class="edit" src="img/default/edit.png" align="right" title="Редактировать" />
+                            </div>
                         </div>';
                     }
                     $result .= '</div>';
-                }else{
+                /*}else{
                     foreach($pages as $key => $value){
                         $result .= '<div class="caption">'.
                             $value['lname'].' "'.$value['nick'].'" '.$value['name']
@@ -128,15 +128,19 @@ class Pages{
                             </ul>
                         </div>';
                     }
-                }
+                }*/
                 break;
             case 'news':
-                $result .= '<div class="caption">Новости</div>'.
+                $result .= '<div class="caption">Новости<img class="add" src="img/default/add.png" align="right" title="Создать" /></div>'.
                     '<div class="content">
                     <ul class="news">';
                     foreach($pages as $key => $value){
                         $result .= '<li id="news'.$value['id'].'">
-                            <div  id="'.$value['id'].'" class="ncaption">'.$value['caption'].'<a href="/news.php?q='.$value['id'].'" >URL</a></div>
+                            <div  id="'.$value['id'].'" class="ncaption">
+                                <span>'.$value['caption'].'</span>
+                                <img class="del" src="img/default/del.png" align="right" title="Удалить" />
+                                <img class="edit" src="img/default/edit.png" align="right" title="Редактировать" />
+                            </div>
                             <div class="ncontent">'.$value['content'].'</div>
                             <div class="nnick">'.$value['nick'].'</div>
                             <div class="ndate">'.$value['date'].'</div>

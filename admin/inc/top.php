@@ -1,5 +1,8 @@
 <?php session_start();
 include('config/config.php');
+
+$objPage = new Pages(); // Объект API работы со страницами
+
 // Подключение к MySQL и запись ID соединения
 $dbconnectID = $c_dbase->getConnect($server,$login,$password);
 $c_dbase->getDB($database); // Выбор БД
