@@ -181,4 +181,9 @@ class Pages{
         }
         return $this->pageOutput($page, $pID, $pages);
     }
+
+    // Запись страницы в базу
+    public function setPage($page = '', $param){
+        return 0;
+    }
 }
