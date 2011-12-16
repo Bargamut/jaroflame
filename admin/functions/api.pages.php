@@ -187,7 +187,7 @@ class Pages{
         return $result;
     }
 
-    // TODO Запись страницы в базу
+    // TODO Запись страницы в базу и начать реализачию проверки доступа
     public function setPage($page = '', $param){
 
         return 0;
