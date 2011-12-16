@@ -165,7 +165,8 @@ class Pages{
     }
 
     // Отправка запроса в БД и разбор массива данных
-    public function getPage($page = '', $pID = ''){
+    // TODO оттестировать функцию отправки на редактирование json_encode
+    public function getPage($page = '', $pID = '', $edit = 0){
         $params = $this->queryArray($page, $pID);
 
         $pages_query = db_select($params['table'],
@@ -179,11 +180,16 @@ class Pages{
                 $pages[$arr_pages['id']][$key] = htmlspecialchars_decode($value);
             }
         }
-        return $this->pageOutput($page, $pID, $pages);
+
+        ($edit == 0) ?
+            $result = $this->pageOutput($page, $pID, $pages)
+          : $result = json_encode($arr_pages);
+        return $result;
     }
 
-    // Запись страницы в базу
+    // TODO Запись страницы в базу
     public function setPage($page = '', $param){
+
         return 0;
     }
 }
