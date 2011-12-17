@@ -77,7 +77,7 @@ function modal(msg){
 			
 			$('.blockMsg').css({
 				left:($(window).width()-$(this).width())/2,
-				top:($(window).height()-$(this).height())/3,
+				top:($(window).height()-$(this).height())/3
 			});
 			$(".blockOverlay")
 				.attr({title: 'Закрыть'})
@@ -123,6 +123,7 @@ function modal(msg){
 											'</li>\n')
 										: null,
 										$("#news"+data2.id+"> .ncaption > span").html(data3.caption),
+                                        console.log('HTMLSpecChars Start'),
 										$("#news"+data2.id+"> .ncontent").html(htmlspecialchars_decode(data3.content)),
 										$("#news"+data2.id+"> .nnick").html(data3.nick),
 										$("#news"+data2.id+"> .ndate").html(data3.date),

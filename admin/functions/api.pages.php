@@ -14,7 +14,6 @@ class Pages{
                         'where' => '`page` = "'.$page.'"',
                         'order' => '`id`',
                         'limit' => '1');
-        $fields = array();
 
         // Определение параметров запроса для конкретной страницы
         switch($page){
@@ -52,6 +51,8 @@ class Pages{
 
         return $params;
     }
+
+
 
     // Вывод страницы на экран
     private function pageOutput($page, $pID, $pages){
@@ -165,7 +166,12 @@ class Pages{
     }
 
     // Отправка запроса в БД и разбор массива данных
-    // TODO оттестировать функцию отправки на редактирование json_encode
+    /**
+     * @param string $page
+     * @param string $pID
+     * @param int $edit
+     * @return array|string
+     */
     public function getPage($page = '', $pID = '', $edit = 0){
         $params = $this->queryArray($page, $pID);
 
@@ -174,22 +180,56 @@ class Pages{
                                  $params['where'],
                                  $params['order']);
 
-        $pages = array();
         while($arr_pages = mysql_fetch_array($pages_query, MYSQL_ASSOC)){
             foreach($arr_pages as $key => $value){
                 $pages[$arr_pages['id']][$key] = htmlspecialchars_decode($value);
+                $p = $arr_pages['id']; // если запрос на редактирование
             }
         }
 
-        ($edit == 0) ?
-            $result = $this->pageOutput($page, $pID, $pages)
-          : $result = json_encode($arr_pages);
-        return $result;
+        // если флаг редактирования включён
+        if ($edit != 0 && $pID != ''){
+            return $pages[$p];
+        } else {
+            return $this->pageOutput($page, $pID, $pages);
+        }
     }
 
     // TODO Запись страницы в базу и начать реализачию проверки доступа
-    public function setPage($page = '', $param){
+    public function setPage($page = '', $action = '', $params = array()){
+        $fields = '`'.implode('`,`', array_keys($params['insert'])).'`';
+        $values = "'".implode("','", array_values($params['insert']))."'";
+        foreach($params['update'] as $key => $value){
+            $u[] = '`'.$key.'` = "'.$value.'"';
+        }
+        $upload = implode(',',$u);
+        $where = '`'.implode('` = "', $params['where']).'"';
+        $pID = $params['where'][1];
 
-        return 0;
+        switch($action){
+            case 'insert':
+                db_insert($page,$fields,$values);
+
+                $data_query = db_select($page,'max(`id`) as `id`','no');
+                while($arr_data = mysql_fetch_array($data_query,MYSQL_ASSOC)){
+                    foreach($arr_data as $value){
+                        $pID = $value;
+                    }
+                }
+                $result = "{resp:'Создание завершено!',del:'Запись удалена!',id:'".$pID."'}";
+                break;
+            case 'update':
+                db_update($page,$upload,$where);
+                $result = "{resp:'Обновление завершено!',del:'Запись удалена!',id:'".$pID."'}";
+                break;
+            case 'delete':
+                db_delete($page,$where);
+                $result = "{resp:'Удаление завершено!',del:'Запись удалена!',id:''}";
+                break;
+            default:
+                $result = "{resp:'Нет подходящего задания!',del:'Запись удалена!',id:''}";
+                break;
+        }
+        return $result;
     }
 }
