@@ -226,6 +226,7 @@ function show_album(img_query){
 	opened = 1;
 }
 
+<?php //TODO не удалять ?>
 function set_social(url,title,text,img){
 	$(".twt").attr("href","http://twitter.com/share?text="+text+"&url="+encodeURIComponent(url));
 	$(".fcb").attr("href","http://www.facebook.com/sharer.php?u="+encodeURIComponent(url)+"&i="+encodeURIComponent(img)+"&t="+text);

@@ -9,14 +9,14 @@ function ajaxFileUpload(){
 			$(this).hide();
 		});
 	
-	/*
-	Подготовка Ajax загрузки файлов
-	url: Адрес файла сценария обработки загруженных файлов
-	fileElementId: тип файла входного ID элемента, и это будет индекс $_FILES Array()
-	dataType: поддержка JSON, XML
-	secureuri: использовать безопасный протокол
-	success: Функция обратного вызова, когда Ajax завершён
-	error: функция обратного вызова, если возникла ошибка Ajax
+	/**
+     * @desc Подготовка Ajax загрузки файлов
+     * #param $url Адрес файла сценария обработки загруженных файлов
+     * #param $fileElementId тип файла входного ID элемента, и это будет индекс $_FILES Array()
+     * #param $dataType поддержка JSON, XML
+     * #param $secureuri использовать безопасный протокол
+     * #param $success Функция обратного вызова, когда Ajax завершён
+     * #param $error функция обратного вызова, если возникла ошибка Ajax
 	*/
 	alert('тест');
 	$.ajaxFileUpload({

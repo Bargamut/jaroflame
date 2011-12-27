@@ -1,20 +1,14 @@
-﻿<script type="text/javascript" language="javascript">
+﻿<?php
+$text = file_get_contents('./patterns/member.editor.html');
+$text = implode('\n'."'+\n'", explode("\r\n", $text));
+?>
+<script type="text/javascript" language="javascript">
 $(".add").livequery('mousedown', function(){
-	text = '<b>Новый участник</b><br />\n'+
-		   '<hr />\n'+
-		   'Изображение: <br /><input type="text" class="avatar" value="" /><br />\n'+
-		   'Имя: <input type="text" class="name" value="" /> \n'+
-		   'Фамилия: <input type="text" class="lname" value="" /> \n'+
-		   'Ник: <input type="text" class="nick" value="" /><br />\n'+
-		   'Звание: <input type="text" class="rank" value="" /> \n'+
-		   'Учёба/работа: <input type="text" class="learnwork" value="" /> \n'+
-		   'Телефон: <input type="text" class="phone" value="" /><br />\n'+
-		   'Дата рождения: <input type="text" class="bdate" value="" /> \n'+
-		   'Дата вступления: <input type="text" class="sdate" value="" /><br />\n'+
-		   '<input type="hidden" class="editor" value="insert" />\n'+
-		   'Подопечные: <br /><textarea id="ppl" class="ppl" rows="5" cols="40"></textarea><br />\n'+
-		   'Мероприятия: <br /><textarea id="fests" class="fests" rows="10" cols="40"></textarea><br />\n'+
-		   '<img class="submit" src="img/default/ok.png" align="right" alt="" title="Применить" />';
+	text = '<b>Добавить соклубника</b><br />\n'+
+           '<hr />\n'+
+           '<?=$text?>'+
+           '<input type="hidden" class="editor" value="insert" />\n'+
+           '<img class="submit" src="img/default/ok.png" align="right" alt="" title="Применить" />';
 	modal(text);
 });
 
@@ -30,7 +24,7 @@ $(".del").livequery('mousedown', function(){
 			success: function(html){
 				html != 'null' ? (
 					data = eval("("+html+")"),
-					modal(data.del),
+					modal(data.resp),
 					setTimeout($.unblockUI(),3000)
 				) : null;
 			}
@@ -48,30 +42,32 @@ $(".edit").livequery('mousedown', function(){
 		success: function(html){
 			html != 'null' ? (
 				data = eval("("+html+")"),
-				text = '<b>Редактировать пасспорт</b><br />\n'+
+				text = '<b>Редактировать соклубника</b><br />\n'+
 					   '<hr />\n'+
-					   'Изображение: <br /><input type="text" class="avatar" value="'+data.avatar+'" /><br />\n'+
-					   'Имя: <input type="text" class="name" value="'+data.name+'" /> \n'+
-					   'Фамилия: <input type="text" class="lname" value="'+data.lname+'" /> \n'+
-					   'Ник: <input type="text" class="nick" value="'+data.nick+'" /><br />\n'+
-					   'Звание: <input type="text" class="rank" value="'+data.rank+'" /> \n'+
-					   'Учёба/работа: <input type="text" class="learnwork" value="'+data.learnwork+'" /> \n'+
-					   'Телефон: <input type="text" class="phone" value="'+data.phone+'" /><br />\n'+
-					   'Дата рождения: <input type="text" class="bdate" value="'+data.birthday+'" /> \n'+
-					   'Дата вступления: <input type="text" class="sdate" value="'+data.succdate+'" /><br />\n'+
-					   '<input type="hidden" class="editor" value="update" />\n'+
-					   'Подопечные: <br /><textarea id="ppl" class="ppl" rows="5" cols="40">'+data.people+'</textarea><br />\n'+
-					   'Мероприятия: <br /><textarea id="fests" class="fests" rows="10" cols="40">'+data.fests+'</textarea><br />\n'+
+					   '<?=$text?>'+
+                       '<input type="hidden" class="editor" value="update" />\n'+
 					   '<img class="submit" src="img/default/ok.png" align="right" alt="'+id+'" title="Применить" />',
-				modal(text)
+				modal(text) ? (
+                    $('.avatar').val(data.avatar),
+                    $('.name').val(data.name),
+                    $('.lname').val(data.lname),
+                    $('.nick').val(data.nick),
+                    $('.rank').val(data.rank),
+                    $('.learnwork').val(data.learnwork),
+                    $('.phone').val(data.phone),
+                    $('.bdate').val(data.birthday),
+                    $('.sdate').val(data.succdate),
+                    $('.ppl').val(data.people),
+                    $('.fests').val(data.fests)
+                ) : null
 			) : null;
 		}
 	});
 });
 
 function modal(msg){
-	tinyMCE.execCommand('mceRemoveControl', false, 'fests');
-	tinyMCE.execCommand('mceRemoveControl', false, 'ppl');
+    tinyMCE.execCommand('mceRemoveControl', false, 'fests');
+    tinyMCE.execCommand('mceRemoveControl', false, 'ppl');
 	$.blockUI({
 		message: msg,
 		css: {
@@ -94,17 +90,16 @@ function modal(msg){
 		onBlock: function(){
 			tinyMCE.execCommand('mceAddControl', false, 'fests');
 			tinyMCE.execCommand('mceAddControl', false, 'ppl');
-			
 			$('.blockMsg').css({
 				left:($(window).width()-$(this).width())/2,
-				top:($(window).height()-$(this).height())/2,
+				top:($(window).height()-$(this).height())/2
 			});
 			$(".blockOverlay")
 				.attr({title: 'Закрыть'})
 				.livequery('mousedown',function(){
 					$.unblockUI();
 				});
-			$(".submit").livequery("mousedown", function(){
+			$(".submit").expire().livequery("mousedown", function(){
 				tinyMCE.triggerSave();
 				id = $(this).attr("alt");
 				query = 'table=members&'+
@@ -153,7 +148,7 @@ function modal(msg){
 											data3.nick+'" '+
 											data3.name
 										),
-										
+
 										$(".blockMsg").html(data2.resp),
 										setTimeout($.unblockUI,1500)
 									) : null;
@@ -165,5 +160,6 @@ function modal(msg){
 			});
 		}
 	});
+    return true;
 }
 </script>

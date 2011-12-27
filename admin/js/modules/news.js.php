@@ -21,7 +21,7 @@ $(".del").livequery('mousedown', function(){
 			success: function(html){
 				html != 'null' ? (
 					data = eval("("+html+")"),
-					modal(data.del),
+					modal(data.resp),
 					setTimeout($.unblockUI(),3000)
 				) : null;
 			}

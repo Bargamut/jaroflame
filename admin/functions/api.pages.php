@@ -52,8 +52,6 @@ class Pages{
         return $params;
     }
 
-
-
     // Вывод страницы на экран
     private function pageOutput($page, $pID, $pages){
         $result = '<tr>'.'<td width="900px" valign="top">';
@@ -165,8 +163,8 @@ class Pages{
         return $result;
     }
 
-    // Отправка запроса в БД и разбор массива данных
     /**
+     * Отправка запроса в БД и разбор массива данных
      * @param string $page
      * @param string $pID
      * @param int $edit
@@ -195,15 +193,21 @@ class Pages{
         }
     }
 
-    // TODO Запись страницы в базу и начать реализачию проверки доступа
+    /**
+     * Отправка данных в БД на запись/удаление
+     * @param string $page
+     * @param string $action
+     * @param array $params
+     * @return string
+     */
     public function setPage($page = '', $action = '', $params = array()){
-        $fields = '`'.implode('`,`', array_keys($params['insert'])).'`';
-        $values = "'".implode("','", array_values($params['insert']))."'";
+        $fields = '`'.implode('`,`', array_keys($params['insert'])).'`'; // поля
+        $values = "'".implode("','", array_values($params['insert']))."'"; // значения
         foreach($params['update'] as $key => $value){
             $u[] = '`'.$key.'` = "'.$value.'"';
         }
-        $upload = implode(',',$u);
-        $where = '`'.implode('` = "', $params['where']).'"';
+        $upload = implode(',',$u); // "поле = значение" для обновления
+        $where = '`'.implode('` = "', $params['where']).'"'; // условие
         $pID = $params['where'][1];
 
         switch($action){

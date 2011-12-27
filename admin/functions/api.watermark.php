@@ -1,9 +1,11 @@
 ﻿<?php
-class watermark{ 
-	/** функция, которая сливает два исходных изображения в одно
-	$main_img_obj - исходное изображение, на которое нужно поставить водяной знак
-	$watermark_img_obj - сам водяной знак, должен содержать альфа-канал
-	$alpha_level - значение прозрачности альфа-канала водяного знака, (0-100, по умолчнию = 100)*/
+class watermark{
+    /** функция, которая сливает два исходных изображения в одно
+     * @param $main_img_src - исходное изображение, на которое нужно поставить водяной знак
+     * @param $watermark_img_src - сам водяной знак, должен содержать альфа-канал
+     * @param int $alpha_level - значение прозрачности альфа-канала водяного знака, (0-100, по умолчнию = 100)
+     * @return bool|\resource|string
+     */
 	function create_watermark($main_img_src, $watermark_img_src, $alpha_level = 100){
 		if (!file_exists($main_img_src)) return false;
 		$size = getimagesize($main_img_src);
