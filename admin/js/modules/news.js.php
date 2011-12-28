@@ -1,10 +1,13 @@
-﻿<script type="text/javascript" language="javascript">
+﻿<?php
+$text = file_get_contents('./patterns/news.editor.html');
+$text = implode('\n'."'+\n'", explode("\r\n", $text));
+?>
+<script type="text/javascript" language="javascript">
 $(".add").livequery('mousedown', function(){
 	text = '<b>Новая новость</b><br />\n'+
 		   '<hr />\n'+
-		   'Название: <br /><input type="text" class="capt" value="" /><br />\n'+
-		   '<input type="hidden" class="editor" value="insert" />\n'+
-		   'Содержание: <br /><textarea id="cont" class="cont"></textarea><br />\n'+
+		   '<?=$text?>'+
+           '<input type="hidden" class="editor" value="insert" />\n'+
 		   '<img class="submit" src="img/default/ok.png" align="right" alt="" title="Применить" />';
 	modal(text);
 });
@@ -41,11 +44,13 @@ $(".edit").livequery('mousedown', function(){
 				data = eval("("+html+")"),
 				text = '<b>Редактировать новость</b><br />\n'+
 					   '<hr />\n'+
-					   'Название: <br /><input type="text" class="capt" value="'+data.caption+'" /><br />\n'+
-					   '<input type="hidden" class="editor" value="update" />\n'+
-					   'Содержание: <br /><textarea id="cont" class="cont">'+data.content+'</textarea><br />\n'+
+					   '<?=$text?>'+
+                       '<input type="hidden" class="editor" value="update" />\n'+
 					   '<img class="submit" src="img/default/ok.png" align="right" alt="'+id+'" title="Применить" />',
-				modal(text)
+				modal(text) ? (
+                    $('.capt').val(data.caption),
+                    $('.cont').val(data.content)
+                ) : null
 			) : null;
 		}
 	});
@@ -84,7 +89,7 @@ function modal(msg){
 				.livequery('mousedown',function(){
 					$.unblockUI();
 				});
-			$(".submit").livequery("mousedown", function(){
+			$(".submit").expire().livequery("mousedown", function(){
 				tinyMCE.triggerSave();
 				id = $(this).attr("alt");
 				query = 'table=news&'+
@@ -139,5 +144,6 @@ function modal(msg){
 			});
 		}
 	});
+    return true;
 }
 </script>

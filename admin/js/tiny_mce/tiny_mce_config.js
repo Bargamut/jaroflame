@@ -13,7 +13,7 @@ $(document).ready(function(){
 		// Theme options
 		theme_advanced_buttons1 : "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,styleselect,formatselect,fontselect,fontsizeselect,slice,red_line",
 		theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,media,cleanup,help,code,|,preview,|,forecolor,backcolor",
-		theme_advanced_buttons3 : "",
+		theme_advanced_buttons3 : "MORE",
 		//theme_advanced_buttons5 : "insertfile,insertimage",
 		theme_advanced_toolbar_location : "top",
 		theme_advanced_toolbar_align : "left",
@@ -25,13 +25,19 @@ $(document).ready(function(){
 			// Display an alert onclick
 			ed.onClick.add(function(ed){//ed.windowManager.alert('User clicked the editor.');
 			});
-	
-			/*// Add a custom button
-			ed.addButton('slice',{
-				title: 'Разделить',
-				image: '/js/tiny_mce/themes/advanced/img/slice.gif',
-				onclick: function() {ed.selection.setContent('\n<p>[slice]</p>\n');}
-			});*/
+
+            // Spoiler
+            ed.addButton('MORE',{
+                title: 'Спойлер',
+                image: '/js/tiny_mce/themes/advanced/img/slice.gif',
+                onclick: function() {
+                    ed.selection.setContent('<div class="spoil">\n'+
+                        '<div class="spoil_head">Читать дальше</div>\n'+
+                        '<div class="spoil_cont">'+
+                        ed.selection.getContent()+
+                        '</div>\n'+
+                        '</div>');}
+            });
 		},
 		// Example content CSS (should be your site CSS)
 		//content_css : "/style/default/tinymce.css, /style/default/tinymce_site.css",

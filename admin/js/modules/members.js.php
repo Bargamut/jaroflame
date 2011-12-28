@@ -4,7 +4,7 @@ $text = implode('\n'."'+\n'", explode("\r\n", $text));
 ?>
 <script type="text/javascript" language="javascript">
 $(".add").livequery('mousedown', function(){
-	text = '<b>Добавить соклубника</b><br />\n'+
+	text = '<b>Добавить участника</b><br />\n'+
            '<hr />\n'+
            '<?=$text?>'+
            '<input type="hidden" class="editor" value="insert" />\n'+
@@ -42,7 +42,7 @@ $(".edit").livequery('mousedown', function(){
 		success: function(html){
 			html != 'null' ? (
 				data = eval("("+html+")"),
-				text = '<b>Редактировать соклубника</b><br />\n'+
+				text = '<b>Редактировать участника</b><br />\n'+
 					   '<hr />\n'+
 					   '<?=$text?>'+
                        '<input type="hidden" class="editor" value="update" />\n'+
