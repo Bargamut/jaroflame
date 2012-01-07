@@ -31,12 +31,11 @@ $(document).ready(function(){
                 title: 'Спойлер',
                 image: '/js/tiny_mce/themes/advanced/img/slice.gif',
                 onclick: function() {
-                    ed.selection.setContent('<div class="spoil">\n'+
-                        '<div class="spoil_head">Читать дальше</div>\n'+
-                        '<div class="spoil_cont">'+
+                    ed.selection.setContent(
+                        '[MORE="Читать дальше"]'+
                         ed.selection.getContent()+
-                        '</div>\n'+
-                        '</div>');}
+                        '[/MORE]');
+                }
             });
 		},
 		// Example content CSS (should be your site CSS)

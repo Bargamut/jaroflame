@@ -5,6 +5,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="style/default.css" />
 <link rel="stylesheet" type="text/css" href="style/members.css" />
+<link rel="stylesheet" type="text/css" href="/js/multiuploader/fileuploader.css">
+<link rel="stylesheet" type="text/css" href="style/jquery.Jcrop.css">
 <title><?=TITLE_NAME?></title>
 </head>
 

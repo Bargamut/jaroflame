@@ -174,11 +174,32 @@ class Pages{
                 $pages[$arr_pages['id']][$key] = htmlspecialchars_decode($value);
             }
         }
-        return $this->pageOutput($page, $pID, $pages);
+
+        return $this->setSpoiler($this->pageOutput($page, $pID, $pages));
     }
 
     // Запись страницы в базу
     public function setPage($page = '', $param){
         return 0;
+    }
+
+    /** Spoiler
+     * @param string $text
+     * @return mixed
+     */
+    private function setSpoiler($text = ''){
+        $rep_arr = array(
+            'search' => array(
+                '[MORE="',
+                '"]',
+                '[/MORE]'
+            ),
+            'replace' => array(
+                '<div class="spoil"><div class="spoil_capt"><b>',
+                '</b></div><div class="spoil_cont">',
+                '</div></div>'
+            )
+        );
+        return str_replace($rep_arr['search'], $rep_arr['replace'], $text);
     }
 }

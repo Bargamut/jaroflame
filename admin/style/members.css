@@ -39,3 +39,26 @@
     padding:0 0 0 20px;
     margin:0 0 0 160px;}
 .subcont li div{margin:0 0 0 14px;}
+
+#ava_thumb{
+    position: absolute;
+    right: -150px;
+    top: 0px;
+    z-index: 1001;
+    display: none;
+    background-color: #ffffff;
+    border: 1px #000000 solid;
+}
+#ava_prev{
+    width: 147px;
+    height: 186px;
+    overflow: hidden;
+    border: 1px #000 solid;
+}
+#ava_subm{
+    opacity: .4;
+    cursor: pointer;
+}
+#ava_subm:hover{
+    opacity: .9;
+}

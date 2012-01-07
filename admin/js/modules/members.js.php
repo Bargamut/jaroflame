@@ -3,16 +3,16 @@ $text = file_get_contents('./patterns/member.editor.html');
 $text = implode('\n'."'+\n'", explode("\r\n", $text));
 ?>
 <script type="text/javascript" language="javascript">
-$(".add").livequery('mousedown', function(){
+$(".add").expire().livequery('mousedown', function(){
 	text = '<b>Добавить участника</b><br />\n'+
            '<hr />\n'+
            '<?=$text?>'+
            '<input type="hidden" class="editor" value="insert" />\n'+
            '<img class="submit" src="img/default/ok.png" align="right" alt="" title="Применить" />';
-	modal(text);
+	modal(text) ? createUploader() : null;
 });
 
-$(".del").livequery('mousedown', function(){
+$(".del").expire().livequery('mousedown', function(){
 	id = $(this).parent().attr("id");
 	confirm('Удалить запись "'+$(this).parent().find('span').html()+'"?') ? (
 		$("#members"+id).detach(),
@@ -32,7 +32,7 @@ $(".del").livequery('mousedown', function(){
 	) : null;
 });
 
-$(".edit").livequery('mousedown', function(){
+$(".edit").expire().livequery('mousedown', function(){
 	id = $(this).parent().attr("id");
 	$.ajax({
 		type: "POST",
@@ -48,6 +48,8 @@ $(".edit").livequery('mousedown', function(){
                        '<input type="hidden" class="editor" value="update" />\n'+
 					   '<img class="submit" src="img/default/ok.png" align="right" alt="'+id+'" title="Применить" />',
 				modal(text) ? (
+                    $('#ava').attr({src: data.avatar}),
+                    $('#ava_prev > img').attr({src: data.avatar}),
                     $('.avatar').val(data.avatar),
                     $('.name').val(data.name),
                     $('.lname').val(data.lname),
@@ -58,20 +60,41 @@ $(".edit").livequery('mousedown', function(){
                     $('.bdate').val(data.birthday),
                     $('.sdate').val(data.succdate),
                     $('.ppl').val(data.people),
-                    $('.fests').val(data.fests)
+                    $('.fests').val(data.fests),
+                    createUploader()
                 ) : null
 			) : null;
 		}
 	});
 });
 
+$('#ava').expire().livequery("mousedown", function(){
+    createCrop($(this), 147, 186);
+});
+$('#ava_subm').expire().livequery("mousedown", function(){
+    $.ajax({
+        type: "POST",
+        url: "images.php",
+        data: 'm=crop'+
+              '&src='+$('.avatar').val()+
+              '&dest='+$('.avatar').val()+
+              '&t='+$('.ava_t').val()+
+              '&l='+$('.ava_l').val()+
+              '&w='+$('.ava_w').val()+
+              '&h='+$('.ava_h').val(),
+        cache: false
+    });
+    $(this).parent().fadeOut('fast');
+    $('#ava').attr({src:$('.avatar').val()});
+});
+
 function modal(msg){
     tinyMCE.execCommand('mceRemoveControl', false, 'fests');
     tinyMCE.execCommand('mceRemoveControl', false, 'ppl');
-	$.blockUI({
+	$('body').block({
 		message: msg,
 		css: {
-			width: '1000px',
+			width: '1100px',
 			textAlign: 'left',
 			border: '1px #000 solid',
 			padding: '15px',
@@ -160,6 +183,89 @@ function modal(msg){
 			});
 		}
 	});
+
     return true;
+}
+
+/**
+ * Функция создания мультизагрузки
+ */
+function createUploader(){
+    var uploader = new qq.FileUploader({
+        element: $('.multiupload')[0],
+        action: 'upload.php',
+        params: {
+            path: '/img/members'
+        },
+        multiple: false,
+        allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'],
+        sizeLimit: 0, // max size
+        minSizeLimit: 0, // min size
+
+// set to true to output server response to console
+        debug: false,
+
+// events
+// you can return false to abort submit
+        onSubmit: function(id, fileName){},
+        onProgress: function(id, fileName, loaded, total){},
+        onComplete: function(id, fileName, responseJSON){
+            $('.avatar').val(responseJSON.faddr);
+            $('#ava').attr({src : responseJSON.faddr});
+            createCrop($('#ava'), 147, 186);
+            $('#ava_subm').show();
+            $('.qq-upload-success').fadeOut('fast').remove();
+        },
+        onCancel: function(id, fileName){},
+
+        messages: {
+            // error messages, see qq.FileUploaderBasic for content
+        },
+        showMessage: function(message){
+            alert(message);
+        }
+    });
+}
+
+function createCrop($obj, w, h){
+    $obj.Jcrop({
+        onSelect: showPreview,
+        onChange: showPreview,
+        onRelease: hidePreview,
+        bgColor: 'black',
+        bgOpacity: .4,
+        minSize: [w, h],
+        aspectRatio: w / h
+    });
+}
+
+/** Превью для Jcrop
+ * @param coords
+ */
+function showPreview(coords){
+    if (parseInt(coords.w) > 0){
+        var rx = $('#ava_prev').width() / coords.w,
+            ry = $('#ava_prev').height() / coords.h;
+
+        $('#ava_prev > img').css({
+            width: Math.round(rx * $('#ava').width()) + 'px',
+            height: Math.round(ry * $('#ava').height()) + 'px',
+            marginLeft: '-' + Math.round(rx * coords.x) + 'px',
+            marginTop: '-' + Math.round(ry * coords.y) + 'px'
+        });
+
+        $('.ava_t').val(coords.y);
+        $('.ava_l').val(coords.x);
+        $('.ava_w').val(coords.w);
+        $('.ava_h').val(coords.h);
+
+        $('#ava_thumb').fadeIn('fast');
+    }
+}
+
+/** Показать превью Jcrop
+ */
+function hidePreview(){
+    $('#ava_thumb').fadeOut('fast');
 }
 </script>

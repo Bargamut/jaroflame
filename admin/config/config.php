@@ -26,4 +26,6 @@ include('objects/objects.php'); // Создание объектов класс�
 include('functions/dbfunctions.php'); // Функции работы с БД
 include('functions/functions.php'); // Функции сайта
 include('functions/api.pages.php'); // API ввод-вывод страниц
+include('functions/api.images.php'); // API обработки изображений
+include('functions/api.files.php'); // API загрузки файлов
 ?>

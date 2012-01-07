@@ -4,5 +4,7 @@
 <script type="text/javascript" language="javascript" src="/js/function/html_specchars.js"></script>
 <script type="text/javascript" language="javascript" src="/js/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript" language="javascript" src="/js/tiny_mce/tiny_mce_config.js"></script>
+<script type="text/javascript" language="javascript" src="/js/multiuploader/fileuploader.js"></script>
+<script type="text/javascript" language="javascript" src="/js/jquery/plugins/jquery.Jcrop.min.js"></script>
 
 <script type="text/javascript" language="javascript" src="/js/default.js"></script>

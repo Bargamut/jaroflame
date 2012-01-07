@@ -163,13 +163,12 @@ class Pages{
         return $result;
     }
 
-    /**
-     * Отправка запроса в БД и разбор массива данных
-     * @param string $page
-     * @param string $pID
-     * @param int $edit
-     * @return array|string
-     */
+    /** Отправка запроса в БД и разбор массива данных
+      * @param string $page
+      * @param string $pID
+      * @param int $edit
+      * @return array|string
+      */
     public function getPage($page = '', $pID = '', $edit = 0){
         $params = $this->queryArray($page, $pID);
 
@@ -189,17 +188,16 @@ class Pages{
         if ($edit != 0 && $pID != ''){
             return $pages[$p];
         } else {
-            return $this->pageOutput($page, $pID, $pages);
+            return $this->setSpoiler($this->pageOutput($page, $pID, $pages));
         }
     }
 
-    /**
-     * Отправка данных в БД на запись/удаление
-     * @param string $page
-     * @param string $action
-     * @param array $params
-     * @return string
-     */
+    /** Отправка данных в БД на запись/удаление
+      * @param string $page
+      * @param string $action
+      * @param array $params
+      * @return string
+      */
     public function setPage($page = '', $action = '', $params = array()){
         $fields = '`'.implode('`,`', array_keys($params['insert'])).'`'; // поля
         $values = "'".implode("','", array_values($params['insert']))."'"; // значения
@@ -235,5 +233,25 @@ class Pages{
                 break;
         }
         return $result;
+    }
+
+    /** Spoiler
+     * @param string $text
+     * @return mixed
+     */
+    private function setSpoiler($text = ''){
+        $rep_arr = array(
+            'search' => array(
+                '[MORE="',
+                '"]',
+                '[/MORE]'
+            ),
+            'replace' => array(
+                '<div class="spoil"><div class="spoil_capt"><b>',
+                '</b></div><div class="spoil_cont">',
+                '</div></div>'
+            )
+        );
+        return str_replace($rep_arr['search'], $rep_arr['replace'], $text);
     }
 }

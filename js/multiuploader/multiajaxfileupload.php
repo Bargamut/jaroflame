@@ -1,5 +1,5 @@
 <?php
-include('../../functions/imgfunctions.php');
+include('../../functions/api.images.php');
 include('../../functions/api.watermark.php');
 
 $tmpfname = tempnam($_SERVER['DOCUMENT_ROOT']."/uploads", "php");
