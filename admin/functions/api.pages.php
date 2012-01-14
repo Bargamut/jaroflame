@@ -116,7 +116,7 @@ class Pages{
                             $value['lname'].' "'.$value['nick'].'" '.$value['name']
                         .'</div>
                         <div class="content">
-                            <img class="ava" src="'.$value['avatar'].'" align="left" />
+                            <img class="ava_orig" src="'.$value['avatar'].'" align="left" />
                             <ul class="subcont">
                                 <li>Состоит в КИР "Яро Пламя" с '.$value['succdate'].'.</li>
                                 <li>Имеет звание "'.$value['rank'].'".</li>

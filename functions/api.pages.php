@@ -41,6 +41,11 @@ class Pages{
                   : $params['where'] = 'no';
                 $params['order'] = '`date` desc';
                 break;
+            case 'rss':
+                $params['table'] = 'news';
+                $params['where'] = 'no';
+                $params['order'] = '`date` desc';
+                break;
             case 'sources': // источники
                 $params['table'] = 'sources'; break;
             case 'works': // мастерская
@@ -116,7 +121,7 @@ class Pages{
                             $value['lname'].' "'.$value['nick'].'" '.$value['name']
                         .'</div>
                         <div class="content">
-                            <img class="ava" src="'.$value['avatar'].'" align="left" />
+                            <img class="ava_orig" src="'.$value['avatar'].'" align="left" />
                             <ul class="subcont">
                                 <li>Состоит в КИР "Яро Пламя" с '.$value['succdate'].'.</li>
                                 <li>Имеет звание "'.$value['rank'].'".</li>
@@ -130,7 +135,10 @@ class Pages{
                 }
                 break;
             case 'news':
-                $result .= '<div class="caption">Новости</div>'.
+                $result .= '<div class="caption">
+                    Новости
+                    <a href="/rss.php"><img src="/img/default/rss.png" alt="RSS-канал" title="Подпишись" align="right" /></a>
+                    </div>'.
                     '<div class="content">
                     <ul class="news">';
                     foreach($pages as $key => $value){

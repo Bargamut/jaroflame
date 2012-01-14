@@ -9,7 +9,9 @@ $(".add").expire().livequery('mousedown', function(){
            '<?=$text?>'+
            '<input type="hidden" class="editor" value="insert" />\n'+
            '<img class="submit" src="img/default/ok.png" align="right" alt="" title="Применить" />';
-	modal(text) ? createUploader() : null;
+	modal(text) ? (
+        createUploader($('.multiupload')[0], ['jpg', 'jpeg', 'png', 'gif'], false)
+    ) : null;
 });
 
 $(".del").expire().livequery('mousedown', function(){
@@ -61,7 +63,7 @@ $(".edit").expire().livequery('mousedown', function(){
                     $('.sdate').val(data.succdate),
                     $('.ppl').val(data.people),
                     $('.fests').val(data.fests),
-                    createUploader()
+                    createUploader($('.multiupload')[0], ['jpg', 'jpeg', 'png', 'gif'], false)
                 ) : null
 			) : null;
 		}
@@ -70,6 +72,10 @@ $(".edit").expire().livequery('mousedown', function(){
 
 $('#ava').expire().livequery("mousedown", function(){
     createCrop($(this), 147, 186);
+});
+$('#ava_close').expire().livequery("mousedown", function(){
+    jcrop_api.destroy();
+    $('#ava_thumb').fadeOut('fast');
 });
 $('#ava_subm').expire().livequery("mousedown", function(){
     $.ajax({
@@ -85,7 +91,6 @@ $('#ava_subm').expire().livequery("mousedown", function(){
         cache: false
     });
     $(this).parent().fadeOut('fast');
-    $('#ava').attr({src:$('.avatar').val()});
 });
 
 function modal(msg){
@@ -187,85 +192,22 @@ function modal(msg){
     return true;
 }
 
-/**
- * Функция создания мультизагрузки
+/** Присвоение параметров загрузчику
+ * @param u
  */
-function createUploader(){
-    var uploader = new qq.FileUploader({
-        element: $('.multiupload')[0],
-        action: 'upload.php',
-        params: {
-            path: '/img/members'
-        },
-        multiple: false,
-        allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'],
-        sizeLimit: 0, // max size
-        minSizeLimit: 0, // min size
-
-// set to true to output server response to console
-        debug: false,
-
-// events
-// you can return false to abort submit
-        onSubmit: function(id, fileName){},
-        onProgress: function(id, fileName, loaded, total){},
-        onComplete: function(id, fileName, responseJSON){
+function setUplParams(u){
+    (u) ? (
+        u.setParams({
+            path: '/img/members',
+            main_resize: '360x450'
+        }),
+        u._options.onComplete = function(id,fileName,responseJSON){
             $('.avatar').val(responseJSON.faddr);
             $('#ava').attr({src : responseJSON.faddr});
+            $('#ava_prev > img').attr({src : responseJSON.faddr});
             createCrop($('#ava'), 147, 186);
             $('#ava_subm').show();
-            $('.qq-upload-success').fadeOut('fast').remove();
-        },
-        onCancel: function(id, fileName){},
-
-        messages: {
-            // error messages, see qq.FileUploaderBasic for content
-        },
-        showMessage: function(message){
-            alert(message);
         }
-    });
-}
-
-function createCrop($obj, w, h){
-    $obj.Jcrop({
-        onSelect: showPreview,
-        onChange: showPreview,
-        onRelease: hidePreview,
-        bgColor: 'black',
-        bgOpacity: .4,
-        minSize: [w, h],
-        aspectRatio: w / h
-    });
-}
-
-/** Превью для Jcrop
- * @param coords
- */
-function showPreview(coords){
-    if (parseInt(coords.w) > 0){
-        var rx = $('#ava_prev').width() / coords.w,
-            ry = $('#ava_prev').height() / coords.h;
-
-        $('#ava_prev > img').css({
-            width: Math.round(rx * $('#ava').width()) + 'px',
-            height: Math.round(ry * $('#ava').height()) + 'px',
-            marginLeft: '-' + Math.round(rx * coords.x) + 'px',
-            marginTop: '-' + Math.round(ry * coords.y) + 'px'
-        });
-
-        $('.ava_t').val(coords.y);
-        $('.ava_l').val(coords.x);
-        $('.ava_w').val(coords.w);
-        $('.ava_h').val(coords.h);
-
-        $('#ava_thumb').fadeIn('fast');
-    }
-}
-
-/** Показать превью Jcrop
- */
-function hidePreview(){
-    $('#ava_thumb').fadeOut('fast');
+    ) : null;
 }
 </script>

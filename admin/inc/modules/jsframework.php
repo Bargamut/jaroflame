@@ -7,4 +7,4 @@
 <script type="text/javascript" language="javascript" src="/js/multiuploader/fileuploader.js"></script>
 <script type="text/javascript" language="javascript" src="/js/jquery/plugins/jquery.Jcrop.min.js"></script>
 
-<script type="text/javascript" language="javascript" src="/js/default.js"></script>
+<script type="text/javascript" language="javascript" src="js/default.js"></script>

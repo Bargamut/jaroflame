@@ -1,12 +1,16 @@
 ﻿<?php
-class watermark{
+class Watermark{
     /** функция, которая сливает два исходных изображения в одно
      * @param $main_img_src - исходное изображение, на которое нужно поставить водяной знак
      * @param $watermark_img_src - сам водяной знак, должен содержать альфа-канал
      * @param int $alpha_level - значение прозрачности альфа-канала водяного знака, (0-100, по умолчнию = 100)
      * @return bool|\resource|string
      */
-	function create_watermark($main_img_src, $watermark_img_src, $alpha_level = 100){
+	private function create_watermark($main_img_src, $watermark_img_src, $alpha_level = 100){
+        $root = $_SERVER['DOCUMENT_ROOT'];
+        $main_img_src = $root.$main_img_src;
+        $watermark_img_src = $root.$watermark_img_src;
+
 		if (!file_exists($main_img_src)) return false;
 		$size = getimagesize($main_img_src);
 		if ($size === false) return false;
@@ -138,17 +142,21 @@ class watermark{
 	} # конец функции create_watermark()
 	
 	# усреднение двух цветов с учетом прозрачности альфа-канала
-	function _get_ave_color($color_a, $color_b, $alpha_level){
+	private function _get_ave_color($color_a, $color_b, $alpha_level){
 		return round((($color_a*(1-$alpha_level))+($color_b*$alpha_level))); 
 	}
 	
 	# возвращаем значения ближайших RGB-составляющих нового рисунка
-	function _get_image_color($im, $r, $g, $b){
+	private function _get_image_color($im, $r, $g, $b){
 		$c=imagecolorexact($im, $r, $g, $b);
 		if ($c!=-1) return $c;
 		$c=imagecolorallocate($im, $r, $g, $b);
 		if ($c!=-1) return $c;
 		return imagecolorclosest($im, $r, $g, $b);
 	}
+
+    public function make_watermark($main_img_src,$watermark_img_src,$alpha_level = 100){
+        return $this->create_watermark($main_img_src,$watermark_img_src,$alpha_level);
+    }
 } 
 ?> 

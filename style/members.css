@@ -31,11 +31,15 @@
 	margin:0px;
 	border:1px solid #CCC;
 }
+.ava_orig{
+    margin:0px;
+    border:1px solid #CCC;
+}
 
 .capt{width:900px;}
 .cont{width:900px; height:400px;}
 
 .subcont{
 	padding:0 0 0 20px;
-	margin:0 0 0 160px;}
+	margin:0 0 0 360px;}
 .subcont li div{margin:0 0 0 14px;}

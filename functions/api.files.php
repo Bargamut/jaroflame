@@ -8,11 +8,8 @@
  */
 
 class Files{
-    private $error; // Ошибки
-    private $msg; // Сообщение
-    private $f_size; // Размер файла
+    private $msg = array(); // Сообщение
     private $fileElementName = 'file';
-    private $success;
 
     /** Проверка на ошибки при загрузке
      * @param $arg
@@ -46,7 +43,6 @@ class Files{
         fclose($handle);
 
         $upl_dir = $root.$path.DIRECTORY_SEPARATOR; // Папка для загрузки
-        $upl_dir_thumb = $root.$path.DIRECTORY_SEPARATOR.'thumb/'; // Папка для загрузки уменьшенной копии
 
         //print_r($HTTP_RAW_POST_DATA);
         if (isset($_GET['qqfile'])){
@@ -65,12 +61,8 @@ class Files{
         if(!empty($_FILES[$this->fileElementName]['error'])){
             $this->onError($_FILES[$this->fileElementName]['error']);
         }elseif(empty($upl_file_tmp)||$upl_file_tmp=='none'){
-            $this->error='Файл не был загружен..';
+            $this->msg['error'] = 'Файл не был загружен..';
         }else{
-            $this->msg.="Имя файла: ".$upl_file.",".'\n'.
-                        "Временное имя файла: ".$upl_file_tmp.",".'\n';
-            $this->f_size.="Размер файла: ".$fileSize.'\n';
-
             // Если определено имя файла
             if($_GET['name']){
                 $ext = explode('.',$upl_file);
@@ -84,49 +76,17 @@ class Files{
                 }
             }
 
-            $thumb_pref = 'small_';
-            // Если определён префикс файла в thumbs
-            if($_GET['thumbname'] == 'none'){
-                $thumb_pref = '';
-            }
-
             // Перенос в папки
             if(rename($upl_file_tmp, $upl_dir.basename($upl_file))){
-                $this->msg.="Файл верный и успешно загружен.".'\n';
+                $this->msg['status'] = "Файл верный и успешно загружен.";
                 chmod($upl_dir.basename($upl_file), 0644);
-                // Watermark
-                if($_GET['watermark']){
-                    $watermark = new watermark();
-                    $main_img_src = $upl_dir.basename($upl_file);
-                    $watermark_img_src = $root.DIRECTORY_SEPARATOR.'images/default/watermark.png';
-                    $return_img_obj = $watermark->create_watermark( $main_img_src, $watermark_img_src, 100 );
-                }
 
-                // Ресайз
-                if($_GET['resize']){ // если есть размеры ресайза WIDTHxHEIGHT
-                    $size = explode('x',$_GET['resize']);
-                    if(img_resize($upl_dir.basename($upl_file), $upl_dir_thumb.$thumb_pref.basename($upl_file), $size[0], $size[1])){
-                        $this->msg.="Ресайз OK!".'\n';
-                    }else{
-                        $this->msg.="Ресайз провалился!".'\n';
-                    }
-                }
-
-                // Ресайз главного изображения
-                if($_GET['main_resize']){ // если есть размеры ресайза WIDTHxHEIGHT
-                    $size = explode('x',$_GET['main_resize']);
-                    if(img_resize($upl_dir.basename($upl_file),$upl_dir.basename($upl_file),$size[0],$size[1])){
-                        $this->msg.="Ресайз главного изображения OK!".'\n';
-                    }else{
-                        $this->msg.="Ресайз главного изображения провалился!".'\n';
-                    }
-                }
-                $this->success = 'true';
+                $this->msg['success'] = 'true';
             }else{
-                $this->msg .= "Thumb: Возможная атака!".'\n'.
-                              $upl_file_tmp.'\n'.
-                              $upl_dir.basename($upl_file).'\n';
-                $this->success = 'false';
+                $this->msg['status'] = "Thumb: Возможная атака!".'\n'.
+                    $upl_file_tmp.'\n'.
+                    $upl_dir.basename($upl_file).'\n';
+                $this->msg['success'] = 'false';
             }
 
             // Из соображений безопасности, мы удаляем все загруженные файлы
@@ -135,18 +95,13 @@ class Files{
         }
 
         // Отладочная инфа
-        $result = "{".
-                  "error: '".$this->error."',".
-                  "msg: '".$this->msg."',".
-                  "name: '".$upl_file."',".
-                  "name_tmp: '".$upl_file_tmp."',".
-                  "fsize: '".$this->f_size."',".
-                  "faddr: '".$path.DIRECTORY_SEPARATOR.basename($upl_file)."',".
-                  "faddr_small: '".$path.DIRECTORY_SEPARATOR."thumb/small_".basename($upl_file)."',".
-                  "success: '".$this->success."'".
-                  //echo "GET_data: '".-." - ".$_GET['size'].": size[0]=".$size[0].",size[1]=".$size[1]." - ".$_GET['bg']."',\n".
-                  "}";
-        return $result;
+        $this->msg['msg'] = $this->msg;
+        $this->msg['name'] = $upl_file;
+        $this->msg['name_tmp'] = $upl_file_tmp;
+        $this->msg['fsize'] = $fileSize;
+        $this->msg['faddr'] = $path.DIRECTORY_SEPARATOR.basename($upl_file);
+        $this->msg['faddr_thumb'] = $path.DIRECTORY_SEPARATOR.'thumb'.DIRECTORY_SEPARATOR.basename($upl_file);
+        return $this->msg;
     }
 
     public function upload_file($path = '/unsorted'){
