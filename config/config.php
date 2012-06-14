@@ -1,9 +1,9 @@
 <?php
 /*Конфигурационный файл*/
-$server = array('local'=>'localhost','host'=>'78.108.84.245');
-$login = array('local'=>'jf','host'=>'u106771');
-$password = array('local'=>'test','host'=>'ayuzesVF39');
-$database = array('local'=>'jf','host'=>'b106771_jf');
+$server = array('local'=>'localhost','host'=>'idb2.majordomo.ru');
+$login = array('local'=>'jf','host'=>'u134474');
+$password = array('local'=>'test','host'=>'CP4awWNd6G');
+$database = array('local'=>'jf','host'=>'b134474_jf');
 
 // Отладка
 $_SESSION['debug_mode'] = 'off';
