@@ -12,14 +12,14 @@
 
 <body>
 <table border="0" cellpadding="0" cellspacing="0" align="center">
-    <?php include('inc/header.php');?>
+    <?php //include('inc/header.php');?>
 </table>
 <table border="0" cellpadding="0" cellspacing="0" align="center">
-    <?=$objPage->getPage('index')?>
+    <?=//$objPage->getPage('index')?>
 </table>
 <table border="0" cellpadding="0" cellspacing="0" align="center">
-    <?php include('inc/footer.php');?>
+    <?php //include('inc/footer.php');?>
 </table>
 </body>
 </html>
-<?php include('inc/bottom.php');?>
+<?php //include('inc/bottom.php');?>
