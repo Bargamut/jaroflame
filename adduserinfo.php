@@ -23,7 +23,7 @@
         место выдачи: <input name="p_issuance" type="text" value=""><br />
         дата выдачи: <input name="p_date" type="text" value=""> Формата ГГГГ-ММ-ДД<br />
         Адрес прописки: <input name="reg_address" type="text" value=""><br />
-        Место учёбы: <input name="studies" type="text" value=""><br /> Номер школы / <u>Аббревиатура</u> ВУЗ'а
+        Место учёбы: <input name="studies" type="text" value=""> Номер школы / <u>Аббревиатура</u> ВУЗ'а<br />
         Место работы: <input name="work" type="text" value=""><br />
         Мед. ограничения: <input name="medicine" type="text" value=""><br />
         <hr />
