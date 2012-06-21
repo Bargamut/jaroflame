@@ -1,21 +1,5 @@
 // JavaScript Document
 
-/*$(document).ready(function(){
-//easein,easeinout,easeout,expoin,expoout,expoinout,bouncein,bounceout,bounceinout,elasin,elasout,elasinout,backin,backout,backinout,linear
-	$("#lavaLampMenu").lavaLamp({
-		fx: "backinout",
-		speed: 700,
-		click: function(event, menuItem){
-			return false;
-		}
-	});
-});*/
-
-$("#red_button").livequery("mousedown", function(){
-	$("#red_button").attr("src","/images/default/red_button_p.png");
-	change_background();
-});
-$("#red_button").livequery("mouseup", function(){$("#red_button").attr('src','/images/default/red_button_up.png');});
 $(".searchbutton").livequery("mouseup", function(){
 	openUrl('http://frch.ru/search.php', {s:$(".searchfield").val()}, 'parent');
 });
@@ -113,46 +97,6 @@ function getCookie(name) {
 	return(setStr);
 }
 
-function locked_page(){
-	$.ajax({
-		type: "POST",
-		url: '/get_con.php',
-		cache: false,
-		success: function(html){
-			if(html != 'null'){
-				$.blockUI({
-					message: html,
-					css: {
-						width: '320px',
-						//height: '90%',
-						/*top: ($(".modal_content").height()*0.1)/2 + 'px',
-						left: ($(".modal_content").width()-1100)/2 + 'px',*/
-						position:'absolute',
-						border: '2px #999999 solid',
-						padding: '15px 10px 10px 10px',
-						backgroundColor: '#fff',
-						cursor: 'default',
-						'-webkit-border-radius': '10px',
-						'-moz-border-radius': '10px',
-						'-khtml-border-radius': '10px',
-						color: '#000'
-					},
-					overlayCSS: {
-						cursor: 'default',
-						opacity: 0.4,
-						background: '#000000'
-					},
-					onBlock: function(){
-						$(".close_lock> img").livequery("mousedown", function(){$.unblockUI({fadeOut: 0,fadeIn: 0});});
-					},
-					fadeOut: 0,
-					fadeIn: 0
-				});
-			}
-		}
-	});
-}
-
 // Выделение уникальных значений массива
 function arrayUnique(ar){
 	var a = [], l = ar.length;
@@ -163,18 +107,4 @@ function arrayUnique(ar){
 		a.push(ar[i]);
 	}
 	return a;
-}
-
-function set_blog_title(t){
-	switch(t){
-		case 'design':return 'Дизайн и реклама';break;
-		case 'sociality':return 'Социальщина';break;
-		case 'dayfrog':return 'На жабу дня';break;
-		case 'company':return 'Компания';break;
-		case 'reklamovedenie':return 'Рекламоведение';break;
-		case 'contacts':return 'Котнактная информация';break;
-		case 'vacancy':return 'Вакансии';break;
-		case 'partners':return 'Партнёры и поставщики';break;
-		default:return 'Рекламное агентство с секретным оружием';break;
-	}
 }
