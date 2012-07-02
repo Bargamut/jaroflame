@@ -1,0 +1,37 @@
+<?php include('top.php');?>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="css/default.css" />
+    <link rel="stylesheet" type="text/css" href="css/registration.css" />
+    <link rel="shortcut icon" href="<?=SITE_ICON?>" type="image/x-icon">
+    <title><?=SITE_TITLE?></title>
+</head>
+
+<body>
+<div class="main header">
+    <?=SITE_LOGO?>
+</div>
+<div class="main content">
+    <h2><?=REG_CAPTION?></h2>
+    <form id="fReg" name="fReg" action="registration_action.php" method="post" enctype="multipart/form-data">
+        <label for="rEmail"><?=REG_EMAIL?>: </label><input id="rEmail" name="rEmail" type="text" value="" /><br />
+
+        <label for="rLName"><?=REG_LASTNAME?>: </label><input id="rLName" name="rLName" type="text" value="" /><br />
+        <label for="rName"><?=REG_FIRSTNAME?>: </label><input id="rName" name="rName" type="text" value="" /><br />
+        <label for="rFName"><?=REG_FATHERNAME?>: </label><input id="rFName" name="rFName" type="text" value="" /><br />
+
+        <label for="rPass"><?=REG_PASSWORD?>: </label><input id="rPass" name="rPass" type="password" value="" /><br />
+        <label for="rPass2"><?=REG_CONFIRMPASS?>: </label><input id="rPass2" name="rPass2" type="password" value="" /><br />
+
+        <input id="rSubm" name="rSubm" type="submit" value="<?=REG_SUBMIT?>">
+    </form>
+</div>
+<div class="main footer">
+    <?=CREDITS?>
+    <?=DEVELOPERS?>
+</div>
+</body>
+</html>
+<?php include('bottom.php');?>

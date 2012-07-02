@@ -1,4 +1,4 @@
-<?php include('eng/top.php');?>
+<?php include('top.php');?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,12 +8,17 @@
 <title><?=SITE_TITLE?></title>
 </head>
 
-<body style="text-align: center;">
-<?=DEBUG?>
-<br /><br />
-<?=CREDITS?>
-<br /><br />
-<?=DEVELOPERS?>
+<body>
+<div class="main header">
+    <?=SITE_LOGO?>
+</div>
+<div class="main content">
+    <?=DEBUG?>
+</div>
+<div class="main footer">
+    <?=CREDITS?>
+    <?=DEVELOPERS?>
+</div>
 </body>
 </html>
-<?php include('eng/bottom.php');?>
+<?php include('bottom.php');?>
