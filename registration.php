@@ -25,6 +25,8 @@
         <label for="rPass"><?=REG_PASSWORD?>: </label><input id="rPass" name="rPass" type="password" value="" /><br />
         <label for="rPass2"><?=REG_CONFIRMPASS?>: </label><input id="rPass2" name="rPass2" type="password" value="" /><br />
 
+        <label for="rLic"><input id="rLic" name="rLic" type="checkbox" value="ok" /> <?=REG_LICENSE?></label><br />
+
         <input id="rSubm" name="rSubm" type="submit" value="<?=REG_SUBMIT?>">
     </form>
 </div>

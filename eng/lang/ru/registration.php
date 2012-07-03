@@ -17,6 +17,8 @@ define('REG_EMAIL'      , 'E-Mail');
 define('REG_PASSWORD'   , 'Пароль');
 define('REG_CONFIRMPASS', 'Подтверждение пароля');
 
+define('REG_LICENSE'    , 'Обязуюсь не творить фигни!');
+
 define('REG_SUBMIT'     , 'Зарегистрироваться');
 
 define('NOT_CONF_PASS'  , 'Пароли не совпадают!');

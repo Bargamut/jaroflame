@@ -13,4 +13,7 @@ session_start();
 
 include_once('lang/ru/default.php');        // Общий языковой файл RU
 include_once('lang/ru/registration.php');   // Языковой файл для регистрации RU
+include_once('lang/ru/auth.php');           // Языковой файл для авторизации RU
+
+include_once('api/api.database.php');       // API Базы Данных
  ?>
