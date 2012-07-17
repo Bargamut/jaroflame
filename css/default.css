@@ -5,5 +5,43 @@
  * Time: 5:08
  */
 
-body { margin: 0px; padding: 0px; font-family: calibri; }
-.main { width: 900px; border: 1px #f00 solid; margin: 0 auto; }
+html, body { height: 100%; margin: 0px; padding: 0px; font-family: calibri; }
+hr {
+    color: #000; /*для IE */
+    background-color: #000; /*для Firefox, Opera, Safari*/
+    border: 0px none;
+    height: 1px; /* высота 1px IE, Firefox, Opera, Safari */
+    clear: both; /* для очистки, если тег идет после float елемента */
+    margin: 0px;
+}
+.button {
+    background-color: #eee;
+    border: 1px #aaa solid;
+    font-weight: bold;
+    cursor: pointer;
+}
+.button:hover {
+    background-color: #aba;
+    border: 1px #787 solid;
+    color: #fff;
+}
+
+.main {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    width: 900px;
+    margin: 0px auto -70px;
+}
+
+#login_auth {
+    width: auto;
+    position: absolute;
+    right: 0px; bottom: 0px;
+}
+
+.header { position: relative; }
+.content { padding: 5px 10px 15px; }
+
+.footer, .push { height: 70px; width: 900px; margin: 0px auto; text-align: center; }
+.footer hr { width: 700px; margin: 0 auto 10px; }

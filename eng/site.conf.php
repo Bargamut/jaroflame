@@ -16,4 +16,7 @@ include_once('lang/ru/registration.php');   // Языковой файл для 
 include_once('lang/ru/auth.php');           // Языковой файл для авторизации RU
 
 include_once('api/api.database.php');       // API Базы Данных
- ?>
+include_once('api/api.users.php');          // API Пользователей
+
+$USER = new Users();
+?>

@@ -7,9 +7,5 @@
  */
 include_once('top.php');
 
-setcookie ("UID", '', time() - 50000, '/');
-setcookie ("email", '', time() - 50000, '/');
-setcookie ("password", '', time() - 50000, '/');
-
-header('Location: http://'.$_SERVER['SERVER_NAME']);
+$USER->logout();
 ?>

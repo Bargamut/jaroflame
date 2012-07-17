@@ -7,23 +7,29 @@
     <link rel="stylesheet" type="text/css" href="css/auth.css" />
     <link rel="shortcut icon" href="<?=SITE_ICON?>" type="image/x-icon">
     <title><?=SITE_TITLE?></title>
+    <script type="text/javascript" src="js/jquery/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="js/auth.js"></script>
 </head>
 
 <body>
-<div class="main header">
-    <?=SITE_LOGO?>
-</div>
-<div class="main content">
-    <h2><?=AUTH_CAPTION?></h2>
-    <form id="fAuth" name="fAuth" action="auth_action.php" method="post" enctype="multipart/form-data">
-        <label for="aEmail"><?=AUTH_EMAIL?>: </label><input id="aEmail" name="aEmail" type="text" value="" /><br />
+<div class="main ">
+    <div class="header">
+        <?=SITE_LOGO?>
+    </div>
+    <div class="content">
+        <form id="fAuth" name="fAuth" action="auth_action.php" method="post" enctype="multipart/form-data">
+            <h2><?=AUTH_CAPTION?></h2>
+            <input id="aEmail" name="aEmail" type="text" value="<?=AUTH_EMAIL?>" />
+            <input id="aPass" name="aPass" type="password" value="<?=AUTH_PASSWORD?>" />
 
-        <label for="aPass"><?=AUTH_PASSWORD?>: </label><input id="aPass" name="aPass" type="password" value="" /><br />
-
-        <input id="aSubm" name="aSubm" type="submit" value="<?=AUTH_SUBMIT?>">
-    </form>
+            <input id="aSubm" name="aSubm" class="button" type="submit" value="<?=AUTH_SUBMIT?>"><br />
+            <a href="/registration.php">Регистрация</a>
+        </form>
+    </div>
+    <div class="push"></div>
 </div>
-<div class="main footer">
+<div class="footer">
+    <hr />
     <?=CREDITS?>
     <?=DEVELOPERS?>
 </div>

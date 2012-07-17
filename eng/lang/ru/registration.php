@@ -6,7 +6,7 @@
  * Time: 3:36
  */
 
-define('REG_CAPTION'    , 'Форма регистрации');
+define('REG_CAPTION'    , 'Регистрация');
 
 define('REG_LASTNAME'   , 'Фамилия');
 define('REG_FIRSTNAME'  , 'Имя');

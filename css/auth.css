@@ -5,22 +5,10 @@
  * Time: 5:08
  */
 
-#fReg { width: 300px; margin: 0 auto; position: relative; }
-#fReg input { margin: 3px 0; padding: 2px 0; width: 100%; }
-#rLic { width: auto !important; }
+#fAuth { width: 300px; margin: 0 auto; position: relative; }
+#mfAuth { width: 500px; text-align: right; }
+#fAuth input { margin: 3px 0; padding: 2px 0; width: 100%; }
+#mfAuth input { width: 80px; }
 
-#rSubm {
-    height: 50px;
-    margin: 10px 0 5px 0 !important;
-
-    background-color: #eee;
-    border: 1px #aaa solid;
-    font-size: 20px;
-    font-weight: bold;
-}
-#rSubm:hover {
-    background-color: #aba;
-    border: 1px #787 solid;
-    font-size: 22px;
-    color: #fff;
-}
+#aSubm { height: 50px; margin: 10px 0 5px 0 !important; font-size: 20px; }
+#aSubm:hover { font-size: 22px; }

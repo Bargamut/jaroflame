@@ -10,12 +10,13 @@
 </head>
 
 <body>
-<div class="main header">
-    <?=SITE_LOGO?>
-</div>
-<div class="main content">
-    <h2><?=REG_CAPTION?></h2>
+<div class="main ">
+    <div class="header">
+        <?=SITE_LOGO?>
+    </div>
+    <div class="content">
     <form id="fReg" name="fReg" action="registration_action.php" method="post" enctype="multipart/form-data">
+        <h2><?=REG_CAPTION?></h2>
         <label for="rEmail"><?=REG_EMAIL?>: </label><input id="rEmail" name="rEmail" type="text" value="" /><br />
 
         <label for="rLName"><?=REG_LASTNAME?>: </label><input id="rLName" name="rLName" type="text" value="" /><br />
@@ -27,10 +28,13 @@
 
         <label for="rLic"><input id="rLic" name="rLic" type="checkbox" value="ok" /> <?=REG_LICENSE?></label><br />
 
-        <input id="rSubm" name="rSubm" type="submit" value="<?=REG_SUBMIT?>">
+        <input id="rSubm" name="rSubm" class="button" type="submit" value="<?=REG_SUBMIT?>">
     </form>
+    </div>
+    <div class="push"></div>
 </div>
-<div class="main footer">
+<div class="footer">
+    <hr />
     <?=CREDITS?>
     <?=DEVELOPERS?>
 </div>

@@ -9,17 +9,20 @@
 </head>
 
 <body>
-<div class="main header">
-    <?=SITE_LOGO?>
-</div>
-<div class="main content">
+<div class="main ">
+    <div class="header">
+        <?=SITE_LOGO?>
+    </div>
+    <div class="content">
     <?=$ERRORS[$_GET['t']]?>
+    </div>
+    <div class="push"></div>
 </div>
-<div class="main footer">
+<div class="footer">
+    <hr />
     <?=CREDITS?>
     <?=DEVELOPERS?>
 </div>
-
 </body>
 </html>
 <?php include('bottom.php');?>

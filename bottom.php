@@ -5,5 +5,4 @@
  * Date: 29.06.12
  * Time: 5:02
  */
-session_destroy();
 ?>
