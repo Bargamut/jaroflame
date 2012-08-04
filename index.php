@@ -16,27 +16,12 @@
     <div class="header">
         <?=SITE_LOGO?>
         <div id="login_auth">
-        <?php
-        if ($USER->already_login()) {?>
-            <?=$_SESSION['USER']['UNAME']?>
-            <a href="/logout.php">
-                <input id="maExit" name="maExit" class="button" type="button" value="<?=AUTH_EXIT?>" />
-            </a>
-        <?php
-        } else {
-        ?>
-            <form id="mfAuth" name="mfAuth" action="auth_action.php" method="post" enctype="multipart/form-data">
-                <input id="maEmail" name="aEmail" type="text" value="<?=AUTH_EMAIL?>" />
-                <input id="maPass" name="aPass" type="password" value="<?=AUTH_PASSWORD?>" />
-
-                <input id="maSubm" name="aSubm" class="button" type="submit" value="<?=AUTH_SUBMIT?>">
-                <a href="/registration.php" target="_blank">
-                    <input id="maReg" name="maReg" class="button" type="button" value="<?=AUTH_REGISTRATION?>" />
-                </a>
-            </form>
-        <?php
-        }
-        ?>
+            <?php
+            $userinfo['logined'] ?
+                $htmlMAuth = $USER->userTab($userinfo['nickname'])
+            :   $htmlMAuth = $USER->mAuthForm();
+            echo $htmlMAuth;
+            ?>
         </div>
     </div>
     <div class="content">

@@ -5,10 +5,16 @@
  * Time: 5:08
  */
 
+#login_auth { width: auto; position: absolute; right: 0px; bottom: 0px; }
+
 #fAuth { width: 300px; margin: 0 auto; position: relative; }
 #mfAuth { width: 500px; text-align: right; }
 #fAuth input { margin: 3px 0; padding: 2px 0; width: 100%; }
 #mfAuth input { width: 80px; }
 
+#maProfile, #maExit { color: #000; padding: 0px 5px; margin: 0px 2px; text-align: center; text-decoration: none;}
+
 #aSubm { height: 50px; margin: 10px 0 5px 0 !important; font-size: 20px; }
 #aSubm:hover { font-size: 22px; }
+
+#maReg { width: 100px; padding: 0px 5px; color: #000; text-align: center; text-decoration: none;}

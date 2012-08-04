@@ -5,7 +5,7 @@
  * Date: 02.07.12
  * Time: 3:55
  */
-include_once('top.php');
+include_once('../top.php');
 
 $post = array(
     'rLName' => $_POST['rLName'],

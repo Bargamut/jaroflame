@@ -5,6 +5,8 @@
  * Date: 15.07.12
  * Time: 22:46
  */
+
+// TODO: преобразование дат
 class Users {
     /**
      * Регистрация пользователя
@@ -60,20 +62,9 @@ class Users {
      * Авторизация пользователя
      */
     function auth($subm, $mail, $pass) {
-        $auth_correct = $this->authCorrect($mail, $pass);
-
         // Если был сабмит авторизации и все данные введены верно
-        if (!empty($subm) && $auth_correct) {
-            $mail   = htmlspecialchars($mail);
-            $query  = 'SELECT us.`email`, us.`uid`, us.`level`, ub.`firstname`, ub.`lastname`, ub.`fathername` ' .
-                      'FROM users_site us ' .
-                      'LEFT OUTER JOIN users_bio ub ' .
-                      'ON ub.`id` = us.`id`' .
-                      'WHERE us.`email`="' . $mail . '" ' .
-                      'LIMIT 1';
-
-            $rez = mysql_query($query) or die(mysql_error());
-            @$user = mysql_fetch_assoc($rez);
+        if (!empty($subm) && $this->authCorrect($mail, $pass)) {
+            $user = $this->getUserInfo($mail);
             $user['UNAME'] = $user['lastname'].' '.$user['firstname'].' '.$user['fathername'];
 
             // Устанавливаем coockie с данными пользователя
@@ -81,6 +72,7 @@ class Users {
             setcookie ("email", $user['email'], time() + 50000, '/');
 
             // Меняем дату последнего посещения
+            $mail = htmlspecialchars($mail);
             mysql_query('UPDATE users_site SET `date_lastvisit`="' . date('Y-m-d H:i:s') . '" WHERE `email`="' . $mail . '" LIMIT 1');
             // И перенаправляем на главную
             header('Location: http://'.$_SERVER['SERVER_NAME']);
@@ -112,30 +104,132 @@ class Users {
         return (isset($_SESSION['USER']['uid']) || (isset($_COOKIE['UID']) && isset($_COOKIE['email'])));
     }
 
-    function check_level($lvl, $userlvl) {
-        $res        = false;
-        $lvl        = explode(',', $lvl);
-        $userlvl    = explode(',', $userlvl);
+    /**
+     * Функция проверки полномочий пользователя
+     * @param $lvl
+     * @param $userlvl
+     * @return bool
+     */
+    function check_rights($rights, $urights) {
+        $res = false;
 
-        foreach($lvl as $key => $val){
-            if (in_array($val, $userlvl)) { $res = true; }
+        $urights    = $this->parseRights($urights);
+        $rights     = $this->parseRights($rights);
+
+        foreach($rights as $k => $v) {
+            foreach($urights as $uk => $uv) {
+                ($k == $uk && preg_match('/['.$v.']/', $uv)) ? $res = true : null;
+            }
         }
 
         return $res;
     }
 
+    function userTab($nickname) {
+        $res = $nickname.' '.
+               '<a id="maProfile" class="button" href="/profile/?u='.$nickname.'">'.AUTH_PROFILE.'</a>'.
+               '<a id="maExit" class="button" href="/auth/logout.php">'.AUTH_EXIT.'</a>';
+        return $res;
+    }
+
+    function mAuthForm() {
+        $res = '<form id="mfAuth" name="mfAuth" action="/auth/action.php" method="post" enctype="multipart/form-data">'.
+                    '<input id="maEmail" name="aEmail" type="text" value="'.AUTH_EMAIL.'" /> '.
+                    '<input id="maPass" name="aPass" type="password" value="'.AUTH_PASSWORD.'" /> '.
+
+                    '<input id="maSubm" name="aSubm" class="button" type="submit" value="'.AUTH_SUBMIT.'"> '.
+                    '<a id="maReg" class="button" href="/registration/" target="_blank">'.AUTH_REGISTRATION.'</a>'.
+               '</form>';
+        return $res;
+    }
+
     /**
-     * Функция проверки корректности введённых данных
+     * Функция данных пользователя
+     * @param $mail
+     * @return array
+     */
+    function userinfo($mail) {
+        return $this->getUserInfo($mail);
+    }
+
+    /**
+     * Функция данных профиля
+     * @param $nickname
+     * @return array
+     */
+    function profile($nickname) {
+        return $this->getProfileInfo($nickname);
+    }
+
+    /**
+     * Функция данных профилей
+     * @return array
+     */
+    function profiles() {
+        return $this->getProfilesInfo();
+    }
+
+    /**
+     * Функция проверки UID на соответствие необходимому
+     * @param $uid          - пользовательский UID
+     * @param $needleUID    - необходимый UID
+     * @return bool
+     */
+    function isyoUID($uid, $needleUID) {
+        return ($uid == $needleUID);
+    }
+
+    /**
+     * Фукция обновления данных
+     */
+    function updProfile($tbl, $post, $uid) {
+        $sets = array();
+
+        foreach($post as $k => $v) { $sets[] = '`'.$k.'`="'.$v.'"'; }
+        $sets = implode(',', $sets);
+
+        $rez = mysql_query('SELECT `id` FROM users_site WHERE `uid`="'.$uid.'" LIMIT 1');
+        @$result = mysql_fetch_assoc($rez);
+
+        $query = 'UPDATE '.$tbl.' SET '.$sets.' WHERE `id`="'.$result['id'].'" LIMIT 1';
+        echo $query;
+
+        mysql_query('UPDATE '.$tbl.' SET '.$sets.' WHERE `id`="'.$result['id'].'" LIMIT 1') or die(mysql_error());
+    }
+
+    /**
+     * Функция проверки пароля
+     * @param $mail
+     * @param $pass
+     * @return bool
+     */
+    function check_pass($mail, $pass) {
+        $result = '';
+        // не меньше ли 5 символов длина пароля
+        if (strlen($pass) >= 5) {
+            $rez = mysql_query('SELECT `password`, `salt` FROM users_site WHERE `email`="' . $mail . '" AND `block`="0" LIMIT 1');
+            while ($user = mysql_fetch_assoc($rez)) {
+                if (md5(md5($pass).$user['salt']) != $user['password']) {
+                    $result .= 'Невереная пара Логин/Пароль';
+                }
+            }
+        }
+        return ($result == '');
+    }
+
+    /**
+     * Функция проверки корректности введённых данных авторизации
      * @return bool
      */
     private function authCorrect($mail, $pass) {
         $result = '';
+        $mail = htmlspecialchars($mail);
 
         if ($mail == "") $result .= 'Пустой E-Mail|';     // не пусто ли поле логина
         if ($pass == "") $result .= 'Пустой пароль';      // не пусто ли поле пароля
         // не меньше ли 5 символов длина пароля
-        if (strlen($pass) < 5 && empty($path)) $result .= 'pass < 5|';
-        $rez = mysql_query('SELECT `password`, `salt` FROM users_site WHERE `email`="' . $mail . '" AND `block`="1" LIMIT 1');
+        if (strlen($pass) < 5 && empty($pass)) $result .= 'pass < 5|';
+        $rez = mysql_query('SELECT `password`, `salt` FROM users_site WHERE `email`="' . $mail . '" AND `block`="0" LIMIT 1');
         // проверка на существование в БД такого же логина
         if (@mysql_num_rows($rez) == 0) $result .= 'Такого пользователя нет';
         while ($user = mysql_fetch_array($rez, MYSQL_ASSOC)) {
@@ -145,7 +239,7 @@ class Users {
     }
 
     /**
-     * Функция проверки корректности введённых данных
+     * Функция проверки корректности введённых данных регистрации
      * @return bool
      */
     private function registrationCorrect() {
@@ -166,6 +260,84 @@ class Users {
         if (@mysql_num_rows($rez) != 0) $result = 'already_exist|';                   // проверка на существование в БД такого же логина
 
         echo $result;
-        return ($result == '');                                                    //если выполнение функции дошло до этого места, возвращаем true
+        return ($result == '');                                                    // если выполнение функции дошло до этого места, возвращаем true
+    }
+
+    /**
+     * Функция запроса данных пользователя
+     */
+    private function getUserInfo($mail) {
+        $mail   = htmlspecialchars($mail);
+        $query  = 'SELECT'.
+            ' us.`email`, us.`nickname`, us.`uid`, us.`date_reg`, us.`date_lastvisit`, us.`level`, us.`block`, us.`block_reason`,'.
+            ' uc.`rank`, uc.`borndate`, uc.`wards`, uc.`fests`, uc.`awards`,'.
+            ' ub.`firstname`, ub.`lastname`, ub.`fathername`,'.
+            ' ul.`rights`, ul.`lvlname` ' .
+            'FROM users_site us ' .
+            'LEFT OUTER JOIN users_club uc ' .
+            'ON uc.`id` = us.`id`' .
+            'LEFT OUTER JOIN users_bio ub ' .
+            'ON ub.`id` = us.`id`' .
+            'LEFT OUTER JOIN users_lvl ul ' .
+            'ON ul.`lvl` = us.`level`' .
+            'WHERE us.`email`="' . $mail . '" ' .
+            'LIMIT 1';
+
+        $rez = mysql_query($query) or die(mysql_error());
+        @$user = mysql_fetch_assoc($rez);
+        return $user;
+    }
+
+    /**
+     * Функция запроса данных профиля, кроме гостевого
+     */
+    private function getProfileInfo($nickname) {
+        $nickname = htmlspecialchars($nickname);
+        $query = 'SELECT'.
+            ' us.`email`, us.`uid`, us.`block`, us.`block_reason`,'.
+            ' uc.`rank`, uc.`borndate`, uc.`wards`, uc.`fests`, uc.`awards`,'.
+            ' ub.`firstname`, ub.`lastname`, ub.`fathername`, ub.`birthday`,'.
+            ' ud.`p_seria`, ud.`p_number`, ud.`p_issuance`, ud.`p_date`, ud.`studies`, ud.`work`, ud.`medicine`, ud.`reg_address`,'.
+            ' ul.`lvlname`'.
+            ' FROM users_site us'.
+            ' LEFT OUTER JOIN users_club uc ON uc.`id` = us.`id`'.
+            ' LEFT OUTER JOIN users_bio ub ON ub.`id` = us.`id`'.
+            ' LEFT OUTER JOIN users_doc ud ON ud.`id` = us.`id`'.
+            ' LEFT OUTER JOIN users_lvl ul ON ul.`lvl` = us.`level`'.
+            ' WHERE us.`nickname`="' . $nickname . '" AND us.`level` != "G"'.
+            ' LIMIT 1';
+
+        $rez = mysql_query($query) or die(mysql_error());
+        @$profile = mysql_fetch_assoc($rez);
+        return $profile;
+    }
+
+    /**
+     * Функция выбора профилей всех пользовтелей
+     * @return array
+     */
+    private function getProfilesInfo() {
+        $query  = 'SELECT `nickname`, `block`, ub.`firstname`, ub.`lastname`, ub.`fathername` FROM users_site us LEFT OUTER JOIN users_bio ub ON ub.`id` = us.`id` WHERE us.`level`!="G"';
+
+        $rez = mysql_query($query) or die(mysql_error());
+        $i = 0;
+        while(@$p = mysql_fetch_assoc($rez)) {
+            $profile[$i++] = $p;
+        };
+        return $profile;
+    }
+
+    /**
+     * Функция разбора полномочий
+     */
+    private function parseRights($rights) {
+        $r = array();
+
+        $arr = explode(', ', $rights);
+        foreach($arr as $k => $val) {
+            $a = explode(':', $val);
+            $r[$a[0]] = $a[1];
+        }
+        return $r;
     }
 }

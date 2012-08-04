@@ -26,18 +26,15 @@ hr {
     color: #fff;
 }
 
+.error { padding: 5px 15px; margin: 0px 0px 15px; border: 1px #999 solid; background-color: #fed7ba; }
+.error div { padding: 5px 15px; margin: -5px -15px 5px; background-color: #ddd; border-bottom: 1px #999 solid; font-size: 18px; font-weight: bold; }
+
 .main {
     min-height: 100%;
     height: auto !important;
     height: 100%;
     width: 900px;
     margin: 0px auto -70px;
-}
-
-#login_auth {
-    width: auto;
-    position: absolute;
-    right: 0px; bottom: 0px;
 }
 
 .header { position: relative; }

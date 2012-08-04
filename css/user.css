@@ -1,0 +1,26 @@
+/**
+ * Created with JetBrains PhpStorm.
+ * User: Bargamut
+ * Date: 22.07.12
+ * Time: 2:24
+ */
+
+.blocked { padding: 5px 15px; margin: 0px 0px 15px; border: 1px #999 solid; background-color: #fed7ba; }
+.blocked div { padding: 5px 15px; margin: -5px -15px 5px; background-color: #ddd; border-bottom: 1px #999 solid; font-size: 18px; font-weight: bold; }
+
+.profile { }
+.profile .info { border: 1px #aaa dashed; padding: 5px 15px 10px; margin: 3px 0px; position: relative; }
+.profile .info h2 { background-color: #eee; margin: -5px -15px 5px; padding: 5px 10px; font-size: 20px; }
+.profile .info span { font-weight: bold; }
+.profile .info .tool { background-color: #eee; padding: 5px; position: absolute; top: 0px; right: 0px; }
+.profile textarea { vertical-align: top; width: 50%; height: 70px; }
+
+.miniprofile {
+    border: 1px #aaa dotted;
+    width: 200px; height: 250px;
+    padding: 5px; margin: 5px;
+    float: left;
+    text-align: center;
+}
+.miniblocked {}
+
