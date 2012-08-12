@@ -101,9 +101,6 @@ include('../top.php');?>
                 </div>
             </div>
         <?php
-//            echo '<pre>';
-//            print_r($profile);
-//            echo '</pre>';
         } else {
         ?>
             <div class="error">

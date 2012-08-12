@@ -11,22 +11,23 @@ include('../top.php');
 $correct_pass = $USER->check_pass($userinfo['email'], $_POST['password']);
 
 if (!empty($_POST['btnSubm']) && !empty($_POST['password']) && $correct_pass) {
-    $mail_reg = '/^([a-z0-9])(\w|[.]|-|_)+([a-z0-9])@([a-z0-9])([a-z0-9.-]*)([a-z0-9])([.]{1})([a-z]{2,4})$/isu';
-    $date_reg = '/^([0-9]{4}-[0-9]{2}-[0-9]{2})$/isu';
-    $fio_reg = '/^([А-Яа-яЁёA-Za-z]){3,16}$/isu';
-    $ps_reg = '/^([0-9]{4})$/isu';
-    $pn_reg = '/^([0-9]{6})$/isu';
+    // Регулярные выражения для проверки данных
+    $mail_reg   = '/^([a-z0-9])(\w|[.]|-|_)+([a-z0-9])@([a-z0-9])([a-z0-9.-]*)([a-z0-9])([.]{1})([a-z]{2,4})$/isu';
+    $date_reg   = '/^([0-9]{4}-[0-9]{2}-[0-9]{2})$/isu';
+    $fio_reg    = '/^([А-Яа-яЁёA-Za-z]){3,16}$/isu';
+    $ps_reg     = '/^([0-9]{4})$/isu';
+    $pn_reg     = '/^([0-9]{6})$/isu';
 
     if (!empty($_POST['newpass']) && !empty($_POST['newpass2'])) {
         if (md5($_POST['newpass']) == md5($_POST['newpass2'])) {
-            $_POST['salt'] = mt_rand(100, 999);
-            $_POST['password'] = md5(md5($_POST['newpass']).$_POST['salt']);
+            $_POST['salt']      = mt_rand(100, 999);
+            $_POST['password']  = md5(md5($_POST['newpass']).$_POST['salt']);
         } else {
             $SITE->err['send'][] = 'Пароли не совпадают!';
         }
     }
-
     $_POST['email']         = $SITE->var2send_pm($_POST['email'], $mail_reg, 'E-Mail');
+
     $_POST['lastname']      = $SITE->var2send_pm($_POST['lastname'], $fio_reg, 'Фамилии');
     $_POST['firstname']     = $SITE->var2send_pm($_POST['firstname'], $fio_reg, 'Имени');
     $_POST['fathername']    = $SITE->var2send_pm($_POST['fathername'], $fio_reg, 'Отчества');
