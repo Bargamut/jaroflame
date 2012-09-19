@@ -110,15 +110,15 @@ class Users {
      * @param $userlvl
      * @return bool
      */
-    function check_rights($rights, $urights) {
+    function check_rights($needed, $current) {
         $res = false;
 
-        $urights    = $this->parseRights($urights);
-        $rights     = $this->parseRights($rights);
+        $current    = $this->parseRights($current);
+        $needed     = $this->parseRights($needed);
 
-        foreach($rights as $k => $v) {
-            foreach($urights as $uk => $uv) {
-                ($k == $uk && preg_match('/['.$v.']/', $uv)) ? $res = true : null;
+        foreach($needed as $nk => $nv) {
+            foreach($current as $ck => $cv) {
+                ($nk == $ck && preg_match('/['.$nv.']/', $cv)) ? $res = true : null;
             }
         }
 
@@ -317,7 +317,7 @@ class Users {
      * @return array
      */
     private function getProfilesInfo() {
-        $query  = 'SELECT `nickname`, `block`, ub.`firstname`, ub.`lastname`, ub.`fathername` FROM users_site us LEFT OUTER JOIN users_bio ub ON ub.`id` = us.`id` WHERE us.`level`!="G"';
+        $query  = 'SELECT us.`nickname`, us.`block`, ub.`firstname`, ub.`lastname`, ub.`fathername` FROM users_site us LEFT OUTER JOIN users_bio ub ON ub.`id` = us.`id` WHERE us.`level`!="G"';
 
         $rez = mysql_query($query) or die(mysql_error());
         $i = 0;

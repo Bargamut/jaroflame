@@ -33,7 +33,7 @@ include('../top.php');?>
         </div>
     </div>
     <div class="content">
-        <?php
+    <?php
         if ($USER->check_rights('P:r', $userinfo['rights'])) {
             if (isset($_GET['u'])) {
                 $profile = $USER->profile($_GET['u']);
