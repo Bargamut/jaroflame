@@ -16,15 +16,15 @@ class Users {
     function registration($subm, $post) {
         if (!empty($subm) && $this->registrationCorrect($post)) {
             $mail = htmlspecialchars($post['rEmail']);
-            $salt = mt_rand(100, 999);
+            $salt = $this->generateRandString(250);
             $date_reg = date('Y-m-d H:i:s');
             $fio = array(
                 'firstname' => $post['rName'],
                 'lastname' => $post['rLName'],
                 'fathername' => $post['rFName'],
             );
-            $password = md5(md5($post['rPass']).$salt);
-            $token = md5(uniqid(rand(), 1));
+            $password = hash('sha512', hash('sha512', $post['rPass']).$salt);
+            $token = hash('sha512', uniqid(rand(), 1));
 
             mysql_query('
             DROP PROCEDURE IF EXISTS `create_user`;
@@ -126,20 +126,19 @@ class Users {
     }
 
     function userTab($nickname) {
-        $res = $nickname.' '.
-               '<a id="maProfile" class="button" href="/profile/?u='.$nickname.'">'.AUTH_PROFILE.'</a>'.
-               '<a id="maExit" class="button" href="/auth/logout.php">'.AUTH_EXIT.'</a>';
+        $res = file_get_contents(SITE_ROOT.'/eng/tpl/userTab.html');
+        $res = str_replace('{nickname}', $nickname, $res);
+        $res = str_replace('{AUTH_PROFILE}', AUTH_PROFILE, $res);
+        $res = str_replace('{AUTH_EXIT}', AUTH_EXIT, $res);
         return $res;
     }
 
     function mAuthForm() {
-        $res = '<form id="mfAuth" name="mfAuth" action="/auth/action.php" method="post" enctype="multipart/form-data">'.
-                    '<input id="maEmail" name="aEmail" type="text" value="'.AUTH_EMAIL.'" /> '.
-                    '<input id="maPass" name="aPass" type="password" value="'.AUTH_PASSWORD.'" /> '.
-
-                    '<input id="maSubm" name="aSubm" class="button" type="submit" value="'.AUTH_SUBMIT.'"> '.
-                    '<a id="maReg" class="button" href="/registration/" target="_blank">'.AUTH_REGISTRATION.'</a>'.
-               '</form>';
+        $res = file_get_contents(SITE_ROOT.'/eng/tpl/mAuthForm.html');
+        $res = str_replace('{AUTH_EMAIL}', AUTH_EMAIL, $res);
+        $res = str_replace('{AUTH_PASSWORD}', AUTH_PASSWORD, $res);
+        $res = str_replace('{AUTH_SUBMIT}', AUTH_SUBMIT, $res);
+        $res = str_replace('{AUTH_REGISTRATION}', AUTH_REGISTRATION, $res);
         return $res;
     }
 
@@ -191,10 +190,8 @@ class Users {
         $rez = mysql_query('SELECT `id` FROM users_site WHERE `uid`="'.$uid.'" LIMIT 1');
         @$result = mysql_fetch_assoc($rez);
 
-        $query = 'UPDATE '.$tbl.' SET '.$sets.' WHERE `id`="'.$result['id'].'" LIMIT 1';
-        echo $query;
-
         mysql_query('UPDATE '.$tbl.' SET '.$sets.' WHERE `id`="'.$result['id'].'" LIMIT 1') or die(mysql_error());
+        return true;
     }
 
     /**
@@ -209,7 +206,7 @@ class Users {
         if (strlen($pass) >= 5) {
             $rez = mysql_query('SELECT `password`, `salt` FROM users_site WHERE `email`="' . $mail . '" AND `block`="0" LIMIT 1');
             while ($user = mysql_fetch_assoc($rez)) {
-                if (md5(md5($pass).$user['salt']) != $user['password']) {
+                if (hash('sha512', hash('sha512', $pass).$user['salt']) != $user['password']) {
                     $result .= 'Невереная пара Логин/Пароль';
                 }
             }
@@ -233,7 +230,7 @@ class Users {
         // проверка на существование в БД такого же логина
         if (@mysql_num_rows($rez) == 0) $result .= 'Такого пользователя нет';
         while ($user = mysql_fetch_array($rez, MYSQL_ASSOC)) {
-            if (md5(md5($pass).$user['salt']) != $user['password']) $result .= 'Невереная пара Логин/Пароль';
+            if (hash('sha512', hash('sha512', $pass).$user['salt']) != $user['password']) $result .= 'Невереная пара Логин/Пароль';
         }
         return ($result == ''); // если выполнение функции дошло до этого места, возвращаем true
     }
@@ -254,7 +251,7 @@ class Users {
 //    if (!preg_match('/^([а-яА-a-zA-Z0-9])(\w|-|_)+([a-z0-9])$/is'   , $_POST['rName'])) return false;   // соответствует ли Имя регулярному выражению
 //    if (!preg_match('/^([а-яА-Яa-zA-Z0-9])(\w|-|_)+([a-z0-9])$/is'  , $_POST['rFName'])) return false;  // соответствует ли Отчество регулярному выражению
         if (strlen($_POST['rPass']) < 5 && empty($_POST['rPass'])) $result = 'pass < 5|';               // не меньше ли 5 символов длина пароля
-        if (md5($_POST['rPass']) != md5($_POST['rPass2'])) $result = 'not_confirm_pass|';    // равен ли пароль его подтверждению
+        if (hash('512', $_POST['rPass']) != hash('sha512', $_POST['rPass2'])) $result = 'not_confirm_pass|';    // равен ли пароль его подтверждению
         $mail = htmlspecialchars($_POST['rMail']);
         $rez = mysql_query('SELECT * FROM users_site WHERE `email`="'.$mail.'" limit 1');
         if (@mysql_num_rows($rez) != 0) $result = 'already_exist|';                   // проверка на существование в БД такого же логина
@@ -339,5 +336,20 @@ class Users {
             $r[$a[0]] = $a[1];
         }
         return $r;
+    }
+
+    /**
+     * Функция генерации случайной строки
+     * @param int $length
+     * @return string
+     */
+    function generateRandString($length = 35){
+        $chars = 'abdefhiknrstyzABDEFGHKNQRSTYZ23456789._:;';
+        $numChars = strlen($chars);
+        $string = '';
+        for ($i = 0; $i < $length; $i++) {
+            $string .= substr($chars, mt_rand(1, $numChars) - 1, 1);
+        }
+        return $string;
     }
 }

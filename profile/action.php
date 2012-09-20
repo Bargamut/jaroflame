@@ -19,9 +19,9 @@ if (!empty($_POST['btnSubm']) && !empty($_POST['password']) && $correct_pass) {
     $pn_reg     = '/^([0-9]{6})$/isu';
 
     if (!empty($_POST['newpass']) && !empty($_POST['newpass2'])) {
-        if (md5($_POST['newpass']) == md5($_POST['newpass2'])) {
-            $_POST['salt']      = mt_rand(100, 999);
-            $_POST['password']  = md5(md5($_POST['newpass']).$_POST['salt']);
+        if (hash('sha512', $_POST['newpass']) == hash('sha512', $_POST['newpass2'])) {
+            $_POST['salt']      = $USER->generateRandString(250);
+            $_POST['password']  = hash('sha512', hash('sha512', $_POST['newpass']).$_POST['salt']);
         } else {
             $SITE->err['send'][] = 'Пароли не совпадают!';
         }
@@ -62,7 +62,11 @@ if (!empty($_POST['btnSubm']) && !empty($_POST['password']) && $correct_pass) {
     foreach($_POST as $k => $v) { if ($v == '') { unset($_POST[$k]); } }
 
     if (!array_key_exists('send', $SITE->err)) {
-        $USER->updProfile($tbl, $_POST, $userinfo['uid']);
+        if ($USER->updProfile($tbl, $_POST, $userinfo['uid'])) {
+            echo '<b>ОК!</b> Профиль обновлён!';
+        } else {
+            echo '<b>ОШИБКА!</b> Профиль не был обновлён!';
+        }
     } else {
         $r = '';
         foreach($SITE->err['send'] as $k => $v) { $r .= '<b>Ошибка!</b> Некорректное значение: ' . $v . '!<br />'; }
