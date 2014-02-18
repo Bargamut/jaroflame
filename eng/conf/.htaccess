@@ -1,0 +1,4 @@
+<Files *.inc>
+    Order deny,allow
+    Deny from all
+</Files>

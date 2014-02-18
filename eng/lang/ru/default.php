@@ -1,6 +1,5 @@
 <?php
 /**
- * Created by JetBrains PhpStorm.
  * User: Bargamut
  * Date: 02.07.12
  * Time: 3:28
@@ -29,4 +28,3 @@ $ERRORS = array(
     504 => '<div>Ошибка 504:</div> Превышен лимит времени',
     505 => '<div>Ошибка 505:</div> Версия HTTP не поддерживается данным сервером'
 );
-?>

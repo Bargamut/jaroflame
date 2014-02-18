@@ -49,4 +49,3 @@ $result = '<?xml version="1.0" encoding="UTF-8"?>
 $doc = new DOMDocument();
 $doc->loadXML($result);
 echo $doc->saveXML();
-?>
