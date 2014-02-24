@@ -1,16 +1,11 @@
 <?php
-include('top.php');
-
-$SMARTY->assign('title', SITE_TITLE);
-$SMARTY->assign('logo', SITE_LOGO);
-$SMARTY->assign('favicon', $CONF->get('icon', 'project'));
-
-$SMARTY->assign('user_panel', $userinfo['logined'] ? $USER->userTab($userinfo['nickname']) : $USER->mAuthForm());
+include_once($_SERVER['DOCUMENT_ROOT'] . '/top.php');
+include_once(SITE_ROOT . '/eng/modules/common.php');
+include_once(SITE_ROOT . '/eng/modules/header.php');
+include_once(SITE_ROOT . '/eng/modules/footer.php');
 
 $SMARTY->assign('debug', DEBUG);
-$SMARTY->assign('credits', CREDITS);
-$SMARTY->assign('developers', DEVELOPERS);
 
-$SMARTY->display('firstpage.tpl');
+$SMARTY->display('pages/firstpage.tpl');
 
-include('bottom.php');
+include_once(SITE_ROOT . '/bottom.php');

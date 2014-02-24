@@ -1,5 +1,4 @@
 {* Smarty *}
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,27 +10,18 @@
     <link rel="stylesheet" href="/include/css/auth.css" />
     <link rel="shortcut icon" href="{$favicon}" type="image/x-icon">
 
-    <script src="/include/jslib/jq/core/min.js"></script>
-    <script src="/include/js/auth.js"></script>
+    <script type="text/javascript" src="/include/jslib/jq/core/min.js"></script>
+    <script type="text/javascript" src="/include/js/auth.js"></script>
 </head>
 
 <body>
     <div class="main ">
-        <div class="header">
-            {$logo}
-            <div id="login_auth">
-                {$user_panel}
-            </div>
-        </div>
+        {include file="header.tpl"}
         <div class="content">
-            {$debug}
+            {include file="error_msg.tpl"}
         </div>
         <div class="push"></div>
     </div>
-    <div class="footer">
-        <hr />
-        {$credits}
-        {$developers}
-    </div>
+    {include file="footer.tpl"}
 </body>
 </html>

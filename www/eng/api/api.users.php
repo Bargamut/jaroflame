@@ -6,6 +6,9 @@
  */
 
 // TODO: преобразование дат
+/**
+ * Class JF_Users
+ */
 class JF_Users {
     /**
      * Регистрация пользователя
@@ -14,46 +17,30 @@ class JF_Users {
      */
     function registration($subm, $post) {
         if (!empty($subm) && $this->registrationCorrect($post)) {
-            $mail = htmlspecialchars($post['rEmail']);
-            $salt = $this->generateRandString(250);
-            $date_reg = date('Y-m-d H:i:s');
-            $fio = array(
-                'firstname' => $post['rName'],
-                'lastname' => $post['rLName'],
-                'fathername' => $post['rFName'],
-            );
-            $password = hash('sha512', hash('sha512', $post['rPass']).$salt);
-            $token = hash('sha512', uniqid(rand(), 1));
+            $mail       = htmlspecialchars($post['rEmail']);
+            $salt       = $this->generateRandString(250);
+            $date_reg   = date('Y-m-d H:i:s');
+            $fio        = array('firstname'     => $post['rName'],
+                                'lastname'      => $post['rLName'],
+                                'fathername'    => $post['rFName']);
+            $password   = hash('sha512', hash('sha512', $post['rPass']) . $salt);
+            $token      = hash('sha512', uniqid(rand(), 1)); // uid
 
-            mysql_query('
-            DROP PROCEDURE IF EXISTS `create_user`;
-            CREATE PROCEDURE `create_user`(
-                IN m VARCHAR(255),
-                IN p VARCHAR(255),
-                IN s integer(3),
-                IN d VARCHAR(255),
-                IN v VARCHAR(255),
-                IN u VARCHAR(255),
-                IN n VARCHAR(255),
-                IN ln VARCHAR(255),
-                IN fn VARCHAR(255)
-            )
-            NOT DETERMINISTIC
-            SQL SECURITY INVOKER
-            COMMENT ""
-            BEGIN
-                INSERT INTO users_site (`email`, `password`, `salt`, `date_reg`, `date_lastvisit`, `uid`) VALUES (m, p, s, d, v, u);
-                INSERT INTO users_bio (`firstname`, `lastname`, `fathername`) VALUES (n, ln, fn);
-                INSERT INTO users_doc () VALUES ();
-                INSERT INTO users_club () VALUES ();
-            END');
-            $db_query = 'CALL `create_user`("'.$mail.'", "'.$password.'", "'.$salt.'", "'.$date_reg.'", "'.$date_reg.'", "'.$token.'", "'.$fio['firstname'].'", "'.$fio['lastname'].'", "'.$fio['fathername'].'")';
+            $db_query = 'CALL `create_user`("' . $mail . '", "' .
+                $password . '", "' .
+                $salt . '", "' .
+                $date_reg . '", "' .
+                $date_reg . '", "' .
+                $token . '", "' .
+                $fio['firstname'] . '", "' .
+                $fio['lastname'] . '", "' .
+                $fio['fathername'] . '")';
 
             if (mysql_query($db_query) or die(mysql_error())) {
                 return $this->auth($subm, $post['rEmail'], $post['rPass']);
             }
         } else {
-//            header('Location: http://'.$_SERVER['SERVER_NAME']);
+//            header('Location: http://' . $_SERVER['SERVER_NAME']);
         }
     }
 
@@ -64,20 +51,20 @@ class JF_Users {
         // Если был сабмит авторизации и все данные введены верно
         if (!empty($subm) && $this->authCorrect($mail, $pass)) {
             $user = $this->getUserInfo($mail);
-            $user['UNAME'] = $user['lastname'].' '.$user['firstname'].' '.$user['fathername'];
+            $user['UNAME'] = $user['lastname'] . ' ' . $user['firstname'] . ' ' . $user['fathername'];
 
             // Устанавливаем coockie с данными пользователя
-            setcookie ("UID", $user['uid'], time() + 50000, '/');
-            setcookie ("email", $user['email'], time() + 50000, '/');
+            setcookie("UID", $user['uid'], time() + 50000, '/');
+            setcookie("email", $user['email'], time() + 50000, '/');
 
             // Меняем дату последнего посещения
             $mail = htmlspecialchars($mail);
             mysql_query('UPDATE users_site SET `date_lastvisit`="' . date('Y-m-d H:i:s') . '" WHERE `email`="' . $mail . '" LIMIT 1');
             // И перенаправляем на главную
-            header('Location: http://'.$_SERVER['SERVER_NAME']);
+            header('Location: http://' . $_SERVER['SERVER_NAME']);
         } else {
             // Перенаправляем на главную
-            // header('Location: http://'.$_SERVER['SERVER_NAME']);
+            // header('Location: http://' . $_SERVER['SERVER_NAME']);
         }
 
         return $user;
@@ -87,12 +74,12 @@ class JF_Users {
      * Выход
      */
     function logout() {
-        setcookie ("UID", '', time() - 50000, '/');
-        setcookie ("email", '', time() - 50000, '/');
+        setcookie("UID", '', time() - 50000, '/');
+        setcookie("email", '', time() - 50000, '/');
 
         session_destroy();
 
-        header('Location: http://'.$_SERVER['SERVER_NAME']);
+        header('Location: http://' . $_SERVER['SERVER_NAME']);
     }
 
     /**
@@ -117,7 +104,7 @@ class JF_Users {
 
         foreach($needed as $nk => $nv) {
             foreach($current as $ck => $cv) {
-                ($nk == $ck && preg_match('/['.$nv.']/', $cv)) ? $res = true : null;
+                if ($nk == $ck && preg_match('/[' . $nv . ']/', $cv)) { $res = true; }
             }
         }
 

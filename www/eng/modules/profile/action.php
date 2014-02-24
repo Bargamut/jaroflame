@@ -5,7 +5,7 @@
  * Time: 20:06
  */
 
-include('../top.php');
+include('/top.php');
 
 $correct_pass = $USER->check_pass($userinfo['email'], $_POST['password']);
 

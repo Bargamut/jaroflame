@@ -5,7 +5,8 @@
  * Time: 4:17
  */
 
-include_once('/eng/site.classes.php');
+define('SITE_ROOT', $_SERVER['DOCUMENT_ROOT']);
+include_once(SITE_ROOT . '/eng/site.classes.php');
 
 $DB->select_db('b134474_jf');
 

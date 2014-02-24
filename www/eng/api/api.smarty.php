@@ -28,7 +28,7 @@ class JF_Smarty extends Smarty {
         $this->setConfigDir($this->doc_root . '/eng/tpl/configs/');
         $this->setCacheDir($this->doc_root . '/eng/tpl/cache/');
 
-        $this->caching = Smarty::CACHING_LIFETIME_CURRENT;
+        $this->caching = false;
 
         $this->assign('app_name', 'Сайт КИР "Яро Пламя"');
     }

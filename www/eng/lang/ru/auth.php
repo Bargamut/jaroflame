@@ -5,10 +5,11 @@
  * Time: 3:36
  */
 
-define('AUTH_CAPTION'       , 'Вход');
-define('AUTH_EMAIL'         , 'E-Mail');
-define('AUTH_PASSWORD'      , 'Пароль');
-define('AUTH_PROFILE'       , 'Профиль');
-define('AUTH_SUBMIT'        , 'Войти');
-define('AUTH_EXIT'          , 'Выход');
-define('AUTH_REGISTRATION'  , 'Вступить');
+define('AUTH_CAPTION'           , 'Вход');
+define('AUTH_EMAIL'             , 'E-Mail');
+define('AUTH_PASSWORD'          , 'Пароль');
+define('AUTH_PROFILE'           , 'Профиль');
+define('AUTH_SUBMIT'            , 'Войти');
+define('AUTH_EXIT'              , 'Выход');
+define('AUTH_REGISTRATION'      , 'Регистрация');
+define('AUTH_ALREADY_AUTHORIZED', 'Вы уже авторизованы!');

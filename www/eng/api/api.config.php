@@ -20,7 +20,7 @@ class JF_Config {
     private function __construct() {
         // TODO: подумать над подключением неизвестного числа конфигов
         // TODO: сделать установщик движка, с первоначальной генерацией Конфига
-        $this->settings = parse_ini_file("./eng/conf/core.ini", true);
+        $this->settings = parse_ini_file(SITE_ROOT . '/eng/conf/core.ini', true);
     }
 
     /**
