@@ -40,7 +40,7 @@ class JF_Users {
                 return $this->auth($subm, $post['rEmail'], $post['rPass']);
             }
         } else {
-//            header('Location: http://' . $_SERVER['SERVER_NAME']);
+            // header('Location: http://' . $_SERVER['SERVER_NAME']);
         }
     }
 
@@ -108,23 +108,6 @@ class JF_Users {
             }
         }
 
-        return $res;
-    }
-
-    function userTab($nickname) {
-        $res = file_get_contents(SITE_ROOT . '/eng/tpl/templates/userTab.tpl');
-        $res = str_replace('{nickname}', $nickname, $res);
-        $res = str_replace('{AUTH_PROFILE}', AUTH_PROFILE, $res);
-        $res = str_replace('{AUTH_EXIT}', AUTH_EXIT, $res);
-        return $res;
-    }
-
-    function mAuthForm() {
-        $res = file_get_contents(SITE_ROOT.'/eng/tpl/templates/mAuthForm.tpl');
-        $res = str_replace('{AUTH_EMAIL}', AUTH_EMAIL, $res);
-        $res = str_replace('{AUTH_PASSWORD}', AUTH_PASSWORD, $res);
-        $res = str_replace('{AUTH_SUBMIT}', AUTH_SUBMIT, $res);
-        $res = str_replace('{AUTH_REGISTRATION}', AUTH_REGISTRATION, $res);
         return $res;
     }
 

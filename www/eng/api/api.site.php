@@ -31,5 +31,9 @@ class JF_Site {
      * @param $var - переменная
      * @return string
      */
-    public function var2send($var) { (!empty($var)) ? $var = htmlspecialchars($var) : null; return $var; }
+    public function var2send($var) {
+        if (!empty($var)) { $var = htmlspecialchars($var); }
+
+        return $var;
+    }
 }

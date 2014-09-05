@@ -8,7 +8,7 @@
 define('SITE_ROOT', $_SERVER['DOCUMENT_ROOT']);
 include_once(SITE_ROOT . '/eng/site.classes.php');
 
-$DB->select_db('b134474_jf');
+$DB->select_db('b134474_jf2');
 
 if ($USER->already_login()) {
     $userinfo = $_SESSION['USER'];

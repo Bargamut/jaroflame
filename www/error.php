@@ -1,8 +1,8 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'] . '/top.php');
-include_once(SITE_ROOT . '/eng/modules/common.php');
-include_once(SITE_ROOT . '/eng/modules/header.php');
-include_once(SITE_ROOT . '/eng/modules/footer.php');
+include_once(SITE_ROOT . '/common.php');
+include_once(SITE_ROOT . '/header.php');
+include_once(SITE_ROOT . '/footer.php');
 
 $SMARTY->assign('error', $ERRORS[$_GET['t']]);
 

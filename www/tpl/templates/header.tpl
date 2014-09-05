@@ -1,5 +1,5 @@
 <div class="header">
-    <img src="{$logo}" align="top" />
+    <a href="/"><img src="{$logo}" align="top" /></a>
     {if $logined}
         {include file="userTab.tpl"}
     {else}

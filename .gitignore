@@ -3,3 +3,5 @@ wstat/
 .idea/
 
 *.iws
+
+www/eng/conf/core.ini

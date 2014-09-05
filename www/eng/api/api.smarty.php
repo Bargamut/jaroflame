@@ -5,7 +5,7 @@
  * Time: 7:35
  */
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/eng/smarty/Smarty.class.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/smarty/Smarty.class.php');
 
 /**
  * Class JF_Smarty
@@ -23,13 +23,11 @@ class JF_Smarty extends Smarty {
         //** раскомментируйте следующую строку для отображения отладочной консоли
         //$smarty->debugging = true;
 
-        $this->setTemplateDir($this->doc_root . '/eng/tpl/templates/');
-        $this->setCompileDir($this->doc_root . '/eng/tpl/templates_c/');
-        $this->setConfigDir($this->doc_root . '/eng/tpl/configs/');
-        $this->setCacheDir($this->doc_root . '/eng/tpl/cache/');
+        $this->setTemplateDir($this->doc_root . '/tpl/templates/');
+        $this->setCompileDir($this->doc_root . '/tpl/templates_c/');
+        $this->setConfigDir($this->doc_root . '/tpl/configs/');
+        $this->setCacheDir($this->doc_root . '/tpl/cache/');
 
         $this->caching = false;
-
-        $this->assign('app_name', 'Сайт КИР "Яро Пламя"');
     }
 }
