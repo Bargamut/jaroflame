@@ -7,12 +7,10 @@ include_once(SITE_ROOT . '/footer.php');
 if (!$userinfo['logined']) {
     $SMARTY->assign('reg_caption', REG_CAPTION);
     $SMARTY->assign('reg_email', REG_EMAIL);
-    $SMARTY->assign('reg_lastname', REG_LASTNAME);
-    $SMARTY->assign('reg_firstname', REG_FIRSTNAME);
-    $SMARTY->assign('reg_fathername', REG_FATHERNAME);
+    $SMARTY->assign('reg_nickname', REG_NICKNAME);
     $SMARTY->assign('reg_password', REG_PASSWORD);
     $SMARTY->assign('reg_confirmpass', REG_CONFIRMPASS);
-    $SMARTY->assign('reg_license', REG_LICENSE);
+    $SMARTY->assign('reg_accept', REG_ACCEPT);
     $SMARTY->assign('reg_submit', REG_SUBMIT);
 } else {
     $error = array('header' => REG_CAPTION, 'msg' => REG_ALREADY_REGISTERED);

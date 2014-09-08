@@ -26,7 +26,7 @@ if ($USER->check_rights('P:r', $userinfo['rights'])) {
             $SMARTY->assign('lvlname',      $profile['lvlname']);
             $SMARTY->assign('lastname',     $profile['lastname']);
             $SMARTY->assign('firstname',    $profile['firstname']);
-            $SMARTY->assign('firstname',    $profile['fathername']);
+            $SMARTY->assign('patronymic',   $profile['patronymic']);
             $SMARTY->assign('borndate',     $profile['borndate']);
             $SMARTY->assign('rank',         $profile['rank']);
             $SMARTY->assign('wards',        $profile['wards']);

@@ -15,7 +15,7 @@ if ($USER->check_rights('P:w', $userinfo['rights'])) {
     $SMARTY->assign('email', $profile['email']);
     $SMARTY->assign('lastname', $profile['lastname']);
     $SMARTY->assign('firstname', $profile['firstname']);
-    $SMARTY->assign('fathername', $profile['fathername']);
+    $SMARTY->assign('patronymic', $profile['patronymic']);
     $SMARTY->assign('birthday', $profile['birthday']);
     $SMARTY->assign('p_seria', $profile['p_seria']);
     $SMARTY->assign('p_number', $profile['p_number']);

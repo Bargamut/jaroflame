@@ -26,10 +26,10 @@ include_once(SITE_ROOT . '/eng/api/api.debug.php');          // API Отладк
 include_once(SITE_ROOT . '/eng/api/api.smarty.php');         // API Шаблонизатора
 
 $CONF   = JF_Config::getInstance();         // Создаём объект Конфига
-$SITE   = new JF_Site();
-$DEBUG  = new JF_Debug();
 $DB     = new JF_Database($CONF->get('dbhost', $db_section),
                           $CONF->get('dbuser', $db_section),
                           $CONF->get('dbpass', $db_section));
-$USER   = new JF_Users();
+$SITE   = new JF_Site();
+$DEBUG  = new JF_Debug();
+$USER   = new JF_Users($DB);
 $SMARTY = new JF_Smarty();

@@ -6,21 +6,30 @@
  */
 $(function() {
     // Для страницы авторизации
-    $('#aEmail, #aPass').focus(function() { $(this).val() == 'E-Mail' || $(this).val() == 'Пароль' ? $(this).val('') : null; });
-    $('#aEmail').blur(function() { $(this).val() == '' ? $(this).val('E-Mail') : null; });
-    $('#aPass').blur(function() { $(this).val() == '' ? $(this).val('Пароль') : null; });
+    $('#auth_email, #auth_pass', '#auth_form').focus(function() {
+        if ($(this).val() == 'E-Mail' || $(this).val() == 'Пароль') { $(this).val(''); }
+    });
+    $('#auth_email', '#auth_form').blur(function() {
+        if ($(this).val() == '') { $(this).val('E-Mail'); }
+    });
+    $('#auth_pass', '#auth_form').blur(function() {
+        if ($(this).val() == '') { $(this).val('Пароль'); }
+    });
 
     // Для миниавторизации
-    $('#maEmail, #maPass').focus(function() {
-        $(this).val() == 'E-Mail' || $(this).val() == 'Пароль' ? $(this).val('') : null;
+    $('#auth_email, #auth_pass', '#auth_form_mini').focus(function() {
+        if ($(this).val() == 'E-Mail' || $(this).val() == 'Пароль') { $(this).val(''); }
+
         deform($(this), '+');
     });
-    $('#maEmail').blur(function() {
-        $(this).val() == '' ? $(this).val('E-Mail') : null;
+    $('#auth_email', '#auth_form_mini').blur(function() {
+        if ($(this).val() == '') { $(this).val('E-Mail'); }
+
         deform($(this), '-');
     });
-    $('#maPass').blur(function() {
-        $(this).val() == '' ? $(this).val('Пароль') : null;
+    $('#auth_pass', '#auth_form_mini').blur(function() {
+        if ($(this).val() == '') { $(this).val('Пароль'); }
+
         deform($(this), '-');
     });
 });

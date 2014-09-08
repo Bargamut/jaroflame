@@ -40,7 +40,7 @@
                         <form action="/profile/action.php" method="post" enctype="multipart/form-data">
                             <span>Фамилия:</span> <input name="lastname" type="text" value="{$lastname}" /><br />
                             <span>Имя:</span> <input name="firstname" type="text" value="{$firstname}" /><br />
-                            <span>Отчество:</span> <input name="fathername" type="text" value="{$fathername}" /><br />
+                            <span>Отчество:</span> <input name="patronymic" type="text" value="{$patronymic}" /><br />
                             <span>ДР:</span> <input name="birthday" type="text" value="{$birthday}" />
                             <div class="tool">
                                 <span>Старый пароль:</span> <input name="password" type="password" value="" />

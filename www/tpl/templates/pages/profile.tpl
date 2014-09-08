@@ -39,7 +39,7 @@
                             </div>
                             <div id="bio" class="info">
                                 <h2>БИО</h2>
-                                <span>ФИО:</span> {$lastname} {$firstname} {$fathername}
+                                <span>ФИО:</span> {$lastname} {$firstname} {$patronymic}
                                 {if $current_user}
                                     <br />
                                     <span>ДР:</span> {$birthday}
@@ -79,7 +79,7 @@
                                 {$v.nickname}<br />
                                 {$v.lastname}
                                 {$v.firstname}
-                                {$v.fathername}
+                                {$v.patronymic}
                             </a>
                         </div>
                     {/foreach}

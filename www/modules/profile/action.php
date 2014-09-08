@@ -29,7 +29,7 @@ if (!empty($_POST['btnSubm']) && !empty($_POST['password']) && $correct_pass) {
 
     $_POST['lastname']      = $SITE->var2send_pm($_POST['lastname'], $fio_reg, 'Фамилии');
     $_POST['firstname']     = $SITE->var2send_pm($_POST['firstname'], $fio_reg, 'Имени');
-    $_POST['fathername']    = $SITE->var2send_pm($_POST['fathername'], $fio_reg, 'Отчества');
+    $_POST['patronymic']    = $SITE->var2send_pm($_POST['patronymic'], $fio_reg, 'Отчества');
     $_POST['birthday']      = $SITE->var2send_pm($_POST['birthday'], $date_reg, 'Дня рождения');
 
     $_POST['p_seria']       = $SITE->var2send_pm($_POST['p_seria'], $ps_reg, 'Серии паспорта');

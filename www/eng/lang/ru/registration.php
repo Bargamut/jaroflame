@@ -6,13 +6,11 @@
  */
 
 define('REG_CAPTION'            , 'Регистрация');
-define('REG_LASTNAME'           , 'Фамилия');
-define('REG_FIRSTNAME'          , 'Имя');
-define('REG_FATHERNAME'         , 'Отчество');
+define('REG_NICKNAME'           , 'Логин');
 define('REG_EMAIL'              , 'E-Mail');
 define('REG_PASSWORD'           , 'Пароль');
 define('REG_CONFIRMPASS'        , 'Подтверждение пароля');
-define('REG_LICENSE'            , 'Обязуюсь не творить фигни!');
+define('REG_ACCEPT'             , 'Обязуюсь не творить фигни!');
 define('REG_SUBMIT'             , 'Зарегистрироваться');
 define('REG_NOT_CONF_PASS'      , 'Пароли не совпадают!');
 define('REG_EMPTY_PASS'         , 'Пустое значение поля!');

@@ -1,15 +1,14 @@
 /**
- * Created with JetBrains PhpStorm.
  * User: Bargamut
  * Date: 29.06.12
  * Time: 5:08
  */
 
-#fReg { width: 300px; margin: 0 auto; position: relative; }
-#fReg input { margin: 3px 0; padding: 2px 0; width: 100%; }
-#rLic { width: auto !important; }
+#reg_form { width: 300px; margin: 0 auto; position: relative; }
+#reg_form input { margin: 3px 0; padding: 2px 0; width: 100%; }
+#reg_accept { width: auto !important; }
 
-#rSubm {
+#reg_subm {
     height: 50px;
     margin: 10px 0 5px 0 !important;
 
@@ -18,7 +17,7 @@
     font-size: 20px;
     font-weight: bold;
 }
-#rSubm:hover {
+#reg_subm:hover {
     background-color: #aba;
     border: 1px #787 solid;
     font-size: 22px;

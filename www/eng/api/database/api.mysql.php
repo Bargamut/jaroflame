@@ -12,9 +12,9 @@ class JF_Database {
     /**
      * Подключаемся к БД
      *
-     * @param $dbhost - сервер БД
-     * @param $dbuser - имя пользователя БД
-     * @param $dbpass - пароль пользователя БД
+     * @param $dbhost   - сервер БД
+     * @param $dbuser   - имя пользователя БД
+     * @param $dbpass   - пароль пользователя БД
      * @return bool     - при успешном выполнении возвращает true
      */
     function __construct() {
@@ -34,7 +34,8 @@ class JF_Database {
     /**
      * Выбираем базу данных
      *
-     * @param $database - имя БД
+     * @param $dbname   - имя БД
+     * @param $charset  - кодировка соединения (по-умолчанию UTF-8)
      * @return bool     - при успешном выполнении возвращает true
      */
     public function select_db($dbname, $charset = 'utf8') {
@@ -63,13 +64,13 @@ class JF_Database {
             $q = array_shift($args);                            // Вытаскиваем строку запроса
 
             if (count($args) == 1) { $p = array_shift($args); } // Проверяем наличие подставляемых параметров
-            // и вытаскиваем, если нашли
+                                                                // и вытаскиваем, если нашли
 
             if (isset($p)) {                                    // Если есть подставляемые параметры
                 if (!is_array($p)) { $p = (array)$p; }
                 if (count($p) > 0) {
                     $this->quoteSet($q);                        // Квотируем запрос
-                    $this->strFormat($p);                       // Форматируем возможнве стррочные значения
+                    $this->strFormat($p);                       // Форматируем возможные строчные значения
                     $q = vsprintf($q, $p);                      // Заменяем плейсхолдеры на значения
                 }
             }
@@ -77,7 +78,7 @@ class JF_Database {
             if (!$q) { return false; }
 
             $r = mysql_query($q) or die(mysql_error());         // Делаем запрос к БД
-            $r = $this->make_result($r, $q);                    // Возвращаем результат запроса
+            $this->make_result($r, $q);                         // Возвращаем результат запроса
         } else {
             $r = 'Нет нужных данных!';
         }
@@ -126,7 +127,7 @@ class JF_Database {
      * @param $q        - запрос
      * @return array    - возвращаемый массив
      */
-    private function make_result($r, $q) {
+    private function make_result(&$r, $q) {
         $result = array();
 
         if (preg_match('/^SELECT/i', $q)) {
@@ -137,9 +138,11 @@ class JF_Database {
                     $result[] = $row;
                 }
             }
+        } elseif (preg_match('/^INSERT/i', $q)) {
+            $result = true;
         }
 
-        return $result;
+        $r = $result;
     }
 
     /**
@@ -156,7 +159,7 @@ class JF_Database {
      * Восстанавливаем БД из бекапа
      */
     public function takeDump($date) {
-        $filename = $this->dbname.$date.'gz';
+        $filename = $this->dbname . $date . 'gz';
 
         system("gunzip $filename -c > backupnow.sql");
         system("mysql -h $this->dbhost -u $this->dbuser -p$this->dbpass $this->dbname < backupnow.sql");
