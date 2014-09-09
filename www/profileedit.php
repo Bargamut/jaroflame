@@ -9,9 +9,10 @@ include_once(SITE_ROOT . '/common.php');
 include_once(SITE_ROOT . '/header.php');
 include_once(SITE_ROOT . '/footer.php');
 
-if ($USER->check_rights('P:w', $userinfo['rights'])) {
+$SMARTY->assign('check_rights', true);//$USER->check_rights('P:r', $userinfo['rights']));
+//if ($USER->check_rights('P:w', $userinfo['rights'])) {
     $profile = $USER->profile($userinfo['nickname']);
-    $SMARTY->assign('lvlname', $profile['lvlname']);
+    //$SMARTY->assign('lvlname', $profile['lvlname']);
     $SMARTY->assign('email', $profile['email']);
     $SMARTY->assign('lastname', $profile['lastname']);
     $SMARTY->assign('firstname', $profile['firstname']);
@@ -30,9 +31,11 @@ if ($USER->check_rights('P:w', $userinfo['rights'])) {
     $SMARTY->assign('wards', $profile['wards']);
     $SMARTY->assign('fests', $profile['fests']);
     $SMARTY->assign('awards', $profile['awards']);
-} else {
-    $error = array('header' => 'Ошибка', 'msg' => 'Нет доступа!');
-    $SMARTY->assign('error', $error);
-}
+//} else {
+//    $error = array('header' => 'Ошибка', 'msg' => 'Нет доступа!');
+//    $SMARTY->assign('error', $error);
+//}
+
+$SMARTY->display('pages/profileedit.tpl');
 
 include_once(SITE_ROOT . '/bottom.php');

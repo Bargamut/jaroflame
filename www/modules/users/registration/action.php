@@ -10,7 +10,6 @@ $post = array(
     'reg_nickname'  => $_POST['reg_nickname'],
     'reg_email'     => $_POST['reg_email'],
     'reg_pass'      => $_POST['reg_pass'],
-    'reg_pass2'     => $_POST['reg_pass2'],
     'reg_accept'    => $_POST['reg_accept']
 );
 

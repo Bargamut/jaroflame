@@ -9,8 +9,8 @@ include_once(SITE_ROOT . '/common.php');
 include_once(SITE_ROOT . '/header.php');
 include_once(SITE_ROOT . '/footer.php');
 
-$SMARTY->assign('check_rights', $USER->check_rights('P:r', $userinfo['rights']));
-if ($USER->check_rights('P:r', $userinfo['rights'])) {
+$SMARTY->assign('check_rights', true);//$USER->check_rights('P:r', $userinfo['rights']));
+//if ($USER->check_rights('P:r', $userinfo['rights'])) {
 
     $SMARTY->assign('user_profile', isset($_GET['u']));
     if (isset($_GET['u'])) {
@@ -53,10 +53,10 @@ if ($USER->check_rights('P:r', $userinfo['rights'])) {
     } else {
         $SMARTY->assign('profiles', $USER->profiles());
     }
-} else {
-    $error = array('header' => 'Ошибка', 'msg' => 'Нет доступа!');
-    $SMARTY->assign('error', $error);
-}
+//} else {
+//    $error = array('header' => 'Ошибка', 'msg' => 'Нет доступа!');
+//    $SMARTY->assign('error', $error);
+//}
 
 $SMARTY->display('pages/profile.tpl');
 

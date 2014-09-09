@@ -7,23 +7,22 @@
     <meta charset="utf-8" />
 
     <link rel="stylesheet" href="/include/css/default.css" />
-    <link rel="stylesheet" href="/include/css/auth.css" />
-    <link rel="stylesheet" href="/include/css/user.css" />
+    <link rel="stylesheet" href="/include/css/users.css" />
     <link rel="shortcut icon" href="{$favicon}" type="image/x-icon" />
 
     <script type="text/javascript" src="/include/jslib/jq/core/min.js"></script>
-    <script type="text/javascript" src="/include/js/auth.js"></script>
+    <script type="text/javascript" src="/include/js/users.js"></script>
 </head>
 
 <body>
     <div class="main">
-        {include file="header.tpl"}
+        {include file="../commons/header.tpl"}
         <div class="content">
             {if $check_rights}
                 {if $user_profile}
                     {if $profile}
                         {if $block}
-                            {include file="block_msg.tpl"}
+                            {include file="../commons/block_msg.tpl"}
                         {/if}
                         <div class="profile">
                             <div id="site" class="info">
@@ -33,7 +32,7 @@
                                     <br />
                                     <span>E-Mail:</span> {$email}
                                     <div class="tool">
-                                        <a href="/profile/edit.php">Редактировать</a>
+                                        <a href="/profileedit.php">Редактировать</a>
                                     </div>
                                 {/if}
                             </div>
@@ -66,7 +65,7 @@
                             </div>
                         </div>
                     {else}
-                        {include file="error_msg.tpl"}
+                        {include file="../commons/error_msg.tpl"}
                     {/if}
                 {else}
                     {foreach from=$profiles key=k item=v}
@@ -85,11 +84,11 @@
                     {/foreach}
                 {/if}
             {else}
-                {include file="error_msg.tpl"}
+                {include file="../commons/error_msg.tpl"}
             {/if}
         </div>
         <div class="push"></div>
     </div>
-    {include file="footer.tpl"}
+    {include file="../commons/footer.tpl"}
 </body>
 </html>

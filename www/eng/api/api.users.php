@@ -22,6 +22,7 @@ class JF_Users {
      * @param $post - массив данных пользователя
      */
     public function registration($subm, $post) {
+        //TODO: подумать за защиту от ботов (http://habrahabr.ru/post/50328/)
         // Если был сабмит и поля формы регистрации заполнены корректно
         if (!empty($subm) && $this->registrationCorrect($post)) {
             $salt       = $this->generateRandString(250);                               // Генерим "соль"
@@ -43,38 +44,41 @@ class JF_Users {
 
             // Если запись в БД создана, логиним
             if ($user_created) {
-                //TODO: заменить автологин на подтверждение регистрации - отсылка контрольного кода на e-mail
+                //TODO: сделать подтверждение email - отсылка контрольного кода на e-mail, если не подтвердится - удалить аккаунт через неделю
                 $_SESSION['USER'] = $this->auth($subm, $post['reg_email'], $post['reg_pass']);
+
+                // Перенаправляем на главную
+                header('Location: http://' . $_SERVER['SERVER_NAME']);
             }
-        } else {
-            // header('Location: http://' . $_SERVER['SERVER_NAME']);
         }
     }
 
     /**
      * Авторизация пользователя
+     *
+     * @param $subm - был ли сабмит?
+     * @param $mail - email пользователя
+     * @param $pass - пароль
+     *
+     * @return array - ассоциативный массив данных пользователя
      */
     public function auth($subm, $mail, $pass) {
+        $user = array();
+
         // Если был сабмит авторизации и все данные введены верно
         if (!empty($subm) && $this->authCorrect($mail, $pass)) {
-            $user = $this->getUserInfo($mail);
-            $user['UNAME'] = $user['lastname'] . ' ' . $user['firstname'] . ' ' . $user['patronymic'];
+            $user           = $this->getUserInfo($mail);
+            $user['UNAME']  = $user['lastname'] . ' ' . $user['firstname'] . ' ' . $user['patronymic'];
 
             // Устанавливаем coockie с данными пользователя
-            setcookie("UID", $user['uid'], time() + 50000, '/');
-            setcookie("email", $user['email'], time() + 50000, '/');
+            setcookie("UID",    $user['uid'],   time() + 50000, '/');
+            setcookie("email",  $user['email'], time() + 50000, '/');
 
             // Меняем дату последнего посещения
             $this->db_instance->query(
                     'UPDATE users_site SET date_lastvisit=%s WHERE email=%s LIMIT 1',
                     array(date('Y-m-d H:i:s'), $mail)
             );
-
-            // И перенаправляем на главную
-            header('Location: http://' . $_SERVER['SERVER_NAME']);
-        } else {
-            // Перенаправляем на главную
-            // header('Location: http://' . $_SERVER['SERVER_NAME']);
         }
 
         return $user;
@@ -237,7 +241,6 @@ class JF_Users {
         if ($post['reg_nickname'] == "")    { $result .= 'Пустое поле логина<br />'; }               // не пусто ли поле логина
         if ($post['reg_email'] == "")       { $result .= 'Пустое поле e-mail<br />'; }               // не пусто ли поле логина
         if ($post['reg_pass'] == "")        { $result .= 'Пустое поле пароля<br />'; }               // не пусто ли поле пароля
-        if ($post['reg_pass2'] == "")       { $result .= 'Пустое поле подтверждения пароля<br />'; } // не пусто ли поле подтверждения пароля
         if ($post['reg_accept'] != "ok")    { $result .= 'Не приняты условия регистрации<br />'; }   // приняты ли правила
 
         // соответствует ли поле e-mail регулярному выражению
@@ -246,7 +249,6 @@ class JF_Users {
         if (!preg_match('/^([а-яА-Яa-zA-Z0-9\w-_.\\/ \'"]+)$/is', $post['reg_nickname']))   { $result .= 'Некорректный логин<br />'; }
 
         if (strlen($post['reg_pass']) < 5 && empty($post['reg_pass']))                  { $result .= 'Длина пароля менее 5 символов<br />'; }  // не меньше ли 5 символов длина пароля
-        if (hash('sha512', $post['reg_pass']) != hash('sha512', $post['reg_pass2']))    { $result .= 'Пароли не совпадают<br />'; }            // равен ли пароль его подтверждению
 
         if ($result == '') {
             if ($this->isAlreadyRegisteredBy('email', $post['reg_email']))          { $result .= 'Аккаунт с таким e-mail уже зарегистрирован!<br />'; }
@@ -261,15 +263,7 @@ class JF_Users {
      * Функция запроса данных пользователя
      */
     private function getUserInfo($mail) {
-        $user = $this->db_instance->query(
-                'SELECT us.`email`, us.`nickname`, us.`uid`, us.`date_reg`, us.`date_lastvisit`, us.`block`, us.`block_reason`,
-                    uc.`rank`, uc.`borndate`,
-                    ub.`firstname`, ub.`lastname`, ub.`patronymic`
-                FROM users_site us
-                LEFT OUTER JOIN users_club uc ON uc.`id` = us.`id`
-                LEFT OUTER JOIN users_bio ub ON ub.`id` = us.`id`
-                WHERE us.`email`=%s LIMIT 1',
-            $mail);
+        $user = $this->db_instance->query('SELECT us.email, us.nickname, us.uid, us.date_reg, us.date_lastvisit, us.block, us.block_reason, uc.rank, uc.borndate, ub.firstname, ub.lastname, ub.patronymic FROM users_site us LEFT OUTER JOIN users_club uc ON uc.id = us.id LEFT OUTER JOIN users_bio ub ON ub.id = us.id WHERE us.email=%s LIMIT 1', $mail);
 
         return $user;
     }
@@ -278,21 +272,8 @@ class JF_Users {
      * Функция запроса данных профиля, кроме гостевого
      */
     private function getProfileInfo($nickname) {
-        $nickname = htmlspecialchars($nickname);
-        $query = 'SELECT'.
-            ' us.`email`, us.`uid`, us.`block`, us.`block_reason`,'.
-            ' uc.`rank`,'.
-            ' ub.`firstname`, ub.`lastname`, ub.`patronymic`, ub.`birthday`,'.
-            ' ud.`p_seria`, ud.`p_number`, ud.`p_issuance`, ud.`p_date`, ud.`studies`, ud.`work`, ud.`medicine`, ud.`reg_address`'.
-            ' FROM users_site us'.
-            ' LEFT OUTER JOIN users_club uc ON uc.`id` = us.`id`'.
-            ' LEFT OUTER JOIN users_bio ub ON ub.`id` = us.`id`'.
-            ' LEFT OUTER JOIN users_doc ud ON ud.`id` = us.`id`'.
-            ' WHERE us.`nickname`="' . $nickname . '"'.
-            ' LIMIT 1';
+        $profile = $this->db_instance->query('SELECT us.email, us.uid, us.block, us.block_reason, uc.rank, ub.firstname, ub.lastname, ub.patronymic, ub.birthday, ud.passport_serial, ud.passport_number, ud.passport_issuance, ud.passport_date, ud.reg_address FROM users_site us LEFT OUTER JOIN users_club uc ON uc.id = us.id LEFT OUTER JOIN users_bio ub ON ub.id = us.id LEFT OUTER JOIN users_docs ud ON ud.id = us.id WHERE us.nickname=%s LIMIT 1', $nickname);
 
-        $rez = mysql_query($query) or die(mysql_error());
-        @$profile = mysql_fetch_assoc($rez);
         return $profile;
     }
 
@@ -301,14 +282,9 @@ class JF_Users {
      * @return array
      */
     private function getProfilesInfo() {
-        $query  = 'SELECT us.`nickname`, us.`block`, ub.`firstname`, ub.`lastname`, ub.`patronymic` FROM users_site us LEFT OUTER JOIN users_bio ub ON ub.`id` = us.`id`';
+        $profiles = $this->db_instance->query('SELECT us.nickname, us.block, ub.firstname, ub.lastname, ub.patronymic FROM users_site us LEFT OUTER JOIN users_bio ub ON ub.id = us.id');
 
-        $rez = mysql_query($query) or die(mysql_error());
-        $i = 0;
-        while(@$p = mysql_fetch_assoc($rez)) {
-            $profile[$i++] = $p;
-        };
-        return $profile;
+        return $profiles;
     }
 
     /**
@@ -331,9 +307,10 @@ class JF_Users {
      * @return string
      */
     function generateRandString($length = 35){
-        $chars = 'abdefhiknrstyzABDEFGHKNQRSTYZ23456789._:;';
-        $numChars = strlen($chars);
-        $string = '';
+        $chars      = 'abdefhiknrstyzABDEFGHKNQRSTYZ23456789._:;';
+        $numChars   = strlen($chars);
+        $string     = '';
+
         for ($i = 0; $i < $length; $i++) {
             $string .= substr($chars, mt_rand(1, $numChars) - 1, 1);
         }

@@ -20,7 +20,7 @@ if (!empty($_POST['btnSubm']) && !empty($_POST['password']) && $correct_pass) {
     if (!empty($_POST['newpass']) && !empty($_POST['newpass2'])) {
         if (hash('sha512', $_POST['newpass']) == hash('sha512', $_POST['newpass2'])) {
             $_POST['salt']      = $USER->generateRandString(250);
-            $_POST['password']  = hash('sha512', hash('sha512', $_POST['newpass']).$_POST['salt']);
+            $_POST['password']  = hash('sha512', hash('sha512', $_POST['newpass']) . $_POST['salt']);
         } else {
             $SITE->err['send'][] = 'Пароли не совпадают!';
         }
@@ -49,7 +49,7 @@ if (!empty($_POST['btnSubm']) && !empty($_POST['password']) && $correct_pass) {
     $_POST['fests']         = $SITE->var2send($_POST['fests'], 'fests');
     $_POST['awards']        = $SITE->var2send($_POST['awards'], 'awards');
 
-    $tbl = 'users_'.$_POST['type'];
+    $tbl = 'users_' . $_POST['type'];
 
     if ($_POST['type'] != 'site') { unset($_POST['password']); }
 
@@ -61,16 +61,14 @@ if (!empty($_POST['btnSubm']) && !empty($_POST['password']) && $correct_pass) {
     foreach($_POST as $k => $v) { if ($v == '') { unset($_POST[$k]); } }
 
     if (!array_key_exists('send', $SITE->err)) {
-        if ($USER->updProfile($tbl, $_POST, $userinfo['uid'])) {
-            echo '<b>ОК!</b> Профиль обновлён!';
-        } else {
-            echo '<b>ОШИБКА!</b> Профиль не был обновлён!';
-        }
+        echo ($USER->updProfile($tbl, $_POST, $userinfo['uid'])) ?
+                    '<b>ОК!</b> Профиль обновлён!'
+                :   '<b>ОШИБКА!</b> Профиль не был обновлён!';
     } else {
         $r = '';
         foreach($SITE->err['send'] as $k => $v) { $r .= '<b>Ошибка!</b> Некорректное значение: ' . $v . '!<br />'; }
         echo $r;
     };
 } else {
-    echo !empty($_POST['btnSubm']).' && '.!empty($_POST['password']).' && '.$correct_pass;
+    echo !empty($_POST['btnSubm']) . ' && ' . !empty($_POST['password']) . ' && ' . $correct_pass;
 }
