@@ -18,9 +18,9 @@ $SMARTY->assign('check_rights', true);//$USER->check_rights('P:r', $userinfo['ri
 
         $SMARTY->assign('profile', ($profile != ''));
         if ($profile != '') {
-            if ($profile['block']) {
-                $block = array('header' => 'Блокирован!', 'msg' => $profile['block_reason']);
-                $SMARTY->assign('block', $block);
+            if ($profile['blocked']) {
+                $blocked = array('header' => 'Блокирован!', 'msg' => $profile['block_reason']);
+                $SMARTY->assign('blocked', $blocked);
             }
 
             $SMARTY->assign('lvlname',      $profile['lvlname']);

@@ -22,33 +22,38 @@ class JF_Users {
      * @param $post - массив данных пользователя
      */
     public function registration($subm, $post) {
-        //TODO: подумать за защиту от ботов (http://habrahabr.ru/post/50328/)
         // Если был сабмит и поля формы регистрации заполнены корректно
-        if (!empty($subm) && $this->registrationCorrect($post)) {
+        if (!empty($subm) && empty($post['faked_email']) && $this->registrationCorrect($post)) {
             $salt       = $this->generateRandString(250);                               // Генерим "соль"
             $date_reg   = date('Y-m-d H:i:s');                                          // Дата регистрации
+            $date_exp   = date('Y-m-d H:i:s', strtotime('+7 days'));                    // Дата автоудаления неподтверждённого аккаунта - 7 дней
             $password   = hash('sha512', hash('sha512', $post['reg_pass']) . $salt);    // Шифруем пароль
             $token      = hash('sha512', uniqid(rand(), 1));                            // UID
+            $token_act  = hash('sha512', uniqid(rand(), 1));                            // Код активации
 
             $user_created = $this->db_instance->query(
-                "INSERT INTO users_site (nickname, email, password, salt, date_reg, uid) VALUE (%s, %s, %s, %s, %s, %s)",
+                "INSERT INTO users_site (nickname, email, password, salt, date_reg, date_expires, uid, activate_hash) VALUE (%s, %s, %s, %s, %s, %s, %s, %s)",
                 array(
                     $post['reg_nickname'],
                     $post['reg_email'],
                     $password,
                     $salt,
                     $date_reg,
-                    $token
+                    $date_exp,
+                    $token,
+                    $token_act
                 )
             );
 
             // Если запись в БД создана, логиним
             if ($user_created) {
-                //TODO: сделать подтверждение email - отсылка контрольного кода на e-mail, если не подтвердится - удалить аккаунт через неделю
-                $_SESSION['USER'] = $this->auth($subm, $post['reg_email'], $post['reg_pass']);
+                // TODO: Добавить напоминание за 3 и за 1 день, если ещё не активировано.
+                self::activationSend($post['reg_email']);
+
+                //$_SESSION['USER'] = $this->auth($subm, $post['reg_email'], $post['reg_pass']);
 
                 // Перенаправляем на главную
-                header('Location: http://' . $_SERVER['SERVER_NAME']);
+                //header('Location: http://' . $_SERVER['SERVER_NAME']);
             }
         }
     }
@@ -194,7 +199,7 @@ class JF_Users {
         $result = '';
         // не меньше ли 5 символов длина пароля
         if (strlen($pass) >= 5) {
-            $rez = mysql_query('SELECT `password`, `salt` FROM users_site WHERE `email`="' . $mail . '" AND `block`="0" LIMIT 1');
+            $rez = mysql_query('SELECT `password`, `salt` FROM users_site WHERE `email`="' . $mail . '" AND `blocked`="0" LIMIT 1');
             while ($user = mysql_fetch_assoc($rez)) {
                 if (hash('sha512', hash('sha512', $pass).$user['salt']) != $user['password']) {
                     $result .= 'Невереная пара Логин/Пароль';
@@ -217,7 +222,7 @@ class JF_Users {
         // не меньше ли 5 символов длина пароля
         if (strlen($pass) < 5 && empty($pass)) { $result .= 'Пароль меньше 5 символов<br />'; }
 
-        $rez = $this->db_instance->query('SELECT password, salt FROM users_site WHERE email=%s AND block="0" LIMIT 1', $mail);
+        $rez = $this->db_instance->query('SELECT password, salt FROM users_site WHERE email=%s AND blocked="0" LIMIT 1', $mail);
 
         // проверка на существование в БД такого же логина
         if (count($rez) == 0) { $result .= 'Такого пользователя нет<br />'; }
@@ -263,7 +268,7 @@ class JF_Users {
      * Функция запроса данных пользователя
      */
     private function getUserInfo($mail) {
-        $user = $this->db_instance->query('SELECT us.email, us.nickname, us.uid, us.date_reg, us.date_lastvisit, us.block, us.block_reason, uc.rank, uc.borndate, ub.firstname, ub.lastname, ub.patronymic FROM users_site us LEFT OUTER JOIN users_club uc ON uc.id = us.id LEFT OUTER JOIN users_bio ub ON ub.id = us.id WHERE us.email=%s LIMIT 1', $mail);
+        $user = $this->db_instance->query('SELECT us.email, us.nickname, us.uid, us.date_reg, us.date_lastvisit, us.blocked, us.block_reason, uc.rank, uc.borndate, ub.firstname, ub.lastname, ub.patronymic FROM users_site us LEFT OUTER JOIN users_club uc ON uc.id = us.id LEFT OUTER JOIN users_bio ub ON ub.id = us.id WHERE us.email=%s LIMIT 1', $mail);
 
         return $user;
     }
@@ -272,7 +277,7 @@ class JF_Users {
      * Функция запроса данных профиля, кроме гостевого
      */
     private function getProfileInfo($nickname) {
-        $profile = $this->db_instance->query('SELECT us.email, us.uid, us.block, us.block_reason, uc.rank, ub.firstname, ub.lastname, ub.patronymic, ub.birthday, ud.passport_serial, ud.passport_number, ud.passport_issuance, ud.passport_date, ud.reg_address FROM users_site us LEFT OUTER JOIN users_club uc ON uc.id = us.id LEFT OUTER JOIN users_bio ub ON ub.id = us.id LEFT OUTER JOIN users_docs ud ON ud.id = us.id WHERE us.nickname=%s LIMIT 1', $nickname);
+        $profile = $this->db_instance->query('SELECT us.email, us.uid, us.blocked, us.block_reason, uc.rank, ub.firstname, ub.lastname, ub.patronymic, ub.birthday, ud.passport_serial, ud.passport_number, ud.passport_issuance, ud.passport_date, ud.reg_address FROM users_site us LEFT OUTER JOIN users_club uc ON uc.id = us.id LEFT OUTER JOIN users_bio ub ON ub.id = us.id LEFT OUTER JOIN users_docs ud ON ud.id = us.id WHERE us.nickname=%s LIMIT 1', $nickname);
 
         return $profile;
     }
@@ -282,7 +287,7 @@ class JF_Users {
      * @return array
      */
     private function getProfilesInfo() {
-        $profiles = $this->db_instance->query('SELECT us.nickname, us.block, ub.firstname, ub.lastname, ub.patronymic FROM users_site us LEFT OUTER JOIN users_bio ub ON ub.id = us.id');
+        $profiles = $this->db_instance->query('SELECT us.nickname, us.blocked, ub.firstname, ub.lastname, ub.patronymic FROM users_site us LEFT OUTER JOIN users_bio ub ON ub.id = us.id');
 
         return $profiles;
     }
@@ -299,6 +304,55 @@ class JF_Users {
             $r[$a[0]] = $a[1];
         }
         return $r;
+    }
+
+    /**
+     * Функция отправки письма активации аккаунта
+     *
+     * @param $mail
+     */
+    private function activationSend($mail) {
+        $user = $this->db_instance->query('SELECT us.email, us.activate_hash, us.activated, us.date_expires, us.nickname, us.blocked FROM users_site us WHERE us.email=%s LIMIT 1', func_get_arg(0));
+
+        if ($user['blocked'] == 0) {
+            $from       = 'activation@jaroflame.ru';
+            $subject    = "Подтверждение регистрации";
+            $message    = $user['nickname'] . '<br />' .
+                'Вы зарегистрировались на сайте КИР "Яро пламя"!<br />' .
+                'По ссылке вы можете подтвердить свой аккаунт: http://jaroflame/modules/users/activation/action.php?hash=' . $user['activate_hash'];
+
+            // отправляем письмо
+            if (!mail($user['email'], $subject, $message, 'From: ' . $from)) {
+                echo '<a href="../registration_form.php">Вы не правильно указали почту.</a>';
+            } else {
+                echo '<a href="/">На указанный почтовый ящик отправлено письмо с ссылкой для активации вашего личного кабинета.</a>';
+            }
+        }
+    }
+
+    public function activation($hash) {
+        // получаем хеш код и чистим его от лишних символов
+        // $hash = $this->CheckUserNumber($_GET['hash']);
+
+        // TODO: Дописать мдуль автоудаления. CRON?
+
+        if (!empty($hash)) {
+            $result = $this->db_instance->query('SELECT id FROM users_site WHERE activate_hash=%s LIMIT 1', $hash);
+
+            // если хеш код найден, то активируем пользователя - set user_status = true и очищаем его user_hash
+            if (count($result) > 0) {
+                $date_exp = new DateTime;
+                $date_exp->modify('+100 years');
+                $date_exp = $date_exp->format('Y-m-d H:i:s');
+
+                $this->db_instance->query('UPDATE users_site SET activated = 1, activate_hash = "", date_expires = %s WHERE activate_hash = %s', array($date_exp, $hash));
+                echo '<a href="../index.php">Учетная запись активирована. Вернуться на главную.</a>';
+            } else {
+                echo '<a href="../index.php">Ошибка. Вернуться на главную.</a>';
+            }
+        } else {
+            echo '<a href="../index.php">Неправильная ссылка. Вернуться на главную.</a>';
+        }
     }
 
     /**

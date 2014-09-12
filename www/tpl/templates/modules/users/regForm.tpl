@@ -1,5 +1,6 @@
 <form id="reg_form" name="reg_form" action="/modules/users/registration/action.php" method="post" enctype="multipart/form-data">
     <h2>{$reg_caption}</h2>
+	<input id="reg_mail" name="email" type="text" value="" />
 	<input id="reg_nickname" name="reg_nickname" type="text" value="{$reg_nickname}" /><br />
     <input id="reg_email" name="reg_email" type="text" value="{$reg_email}" /><br />
 	<div id="reg_passinput">

@@ -7,6 +7,7 @@
 include_once($_SERVER['DOCUMENT_ROOT'] . '/top.php');
 
 $post = array(
+    'faked_email'   => $_POST['email'],
     'reg_nickname'  => $_POST['reg_nickname'],
     'reg_email'     => $_POST['reg_email'],
     'reg_pass'      => $_POST['reg_pass'],

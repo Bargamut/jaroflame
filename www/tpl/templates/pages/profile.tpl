@@ -21,7 +21,7 @@
             {if $check_rights}
                 {if $user_profile}
                     {if $profile}
-                        {if $block}
+                        {if $blocked}
                             {include file="../commons/block_msg.tpl"}
                         {/if}
                         <div class="profile">
@@ -69,7 +69,7 @@
                     {/if}
                 {else}
                     {foreach from=$profiles key=k item=v}
-                        {if $v.block}
+                        {if $v.blocked}
                             <div class="miniprofile miniblocked">
                         {else}
                             <div class="miniprofile">
