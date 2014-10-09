@@ -331,10 +331,8 @@ class JF_Users {
     }
 
     public function activation($hash) {
-        // получаем хеш код и чистим его от лишних символов
-        // $hash = $this->CheckUserNumber($_GET['hash']);
-
-        // TODO: Дописать мдуль автоудаления. CRON?
+        // TODO: Дописать модуль автоудаления. CRON?
+        // TODO: Писать в лог результат выполнения
 
         if (!empty($hash)) {
             $result = $this->db_instance->query('SELECT id FROM users_site WHERE activate_hash=%s LIMIT 1', $hash);
@@ -346,13 +344,17 @@ class JF_Users {
                 $date_exp = $date_exp->format('Y-m-d H:i:s');
 
                 $this->db_instance->query('UPDATE users_site SET activated = 1, activate_hash = "", date_expires = %s WHERE activate_hash = %s', array($date_exp, $hash));
-                echo '<a href="../index.php">Учетная запись активирована. Вернуться на главную.</a>';
+                // Учетная запись активирована. Вернуться на главную.
             } else {
-                echo '<a href="../index.php">Ошибка. Вернуться на главную.</a>';
+                // Активация: не найдено соответствующего хеша активации
+                return false;
             }
         } else {
-            echo '<a href="../index.php">Неправильная ссылка. Вернуться на главную.</a>';
+            // Активация: пустой хеш
+            return false;
         }
+
+        return true;
     }
 
     /**
