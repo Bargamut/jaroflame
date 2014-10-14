@@ -5,7 +5,6 @@
  * Time: 22:46
  */
 
-// TODO: преобразование дат
 /**
  * Class JF_Users
  */
@@ -27,15 +26,15 @@ class JF_Users {
             $salt       = $this->generateRandString(250);                               // Генерим "соль"
             $date_reg   = date('Y-m-d H:i:s');                                          // Дата регистрации
             $date_exp   = date('Y-m-d H:i:s', strtotime('+7 days'));                    // Дата автоудаления неподтверждённого аккаунта - 7 дней
-            $password   = hash('sha512', hash('sha512', $post['reg_pass']) . $salt);    // Шифруем пароль
+            $password   = hash('sha512', hash('sha512', $post['pass']) . $salt);    // Шифруем пароль
             $token      = hash('sha512', uniqid(rand(), 1));                            // UID
             $token_act  = hash('sha512', uniqid(rand(), 1));                            // Код активации
 
             $user_created = $this->db_instance->query(
                 "INSERT INTO users_site (nickname, email, password, salt, date_reg, date_expires, uid, activate_hash) VALUE (%s, %s, %s, %s, %s, %s, %s, %s)",
                 array(
-                    $post['reg_nickname'],
-                    $post['reg_email'],
+                    $post['nickname'],
+                    $post['email'],
                     $password,
                     $salt,
                     $date_reg,
@@ -45,16 +44,9 @@ class JF_Users {
                 )
             );
 
-            // Если запись в БД создана, логиним
-            if ($user_created) {
-                // TODO: Добавить напоминание за 3 и за 1 день, если ещё не активировано.
-                self::activationSend($post['reg_email']);
-
-                //$_SESSION['USER'] = $this->auth($subm, $post['reg_email'], $post['reg_pass']);
-
-                // Перенаправляем на главную
-                //header('Location: http://' . $_SERVER['SERVER_NAME']);
-            }
+            return $user_created;
+        } else {
+            return false;
         }
     }
 
@@ -67,12 +59,12 @@ class JF_Users {
      *
      * @return array - ассоциативный массив данных пользователя
      */
-    public function auth($subm, $mail, $pass) {
+    public function auth($subm, $post) {
         $user = array();
 
         // Если был сабмит авторизации и все данные введены верно
-        if (!empty($subm) && $this->authCorrect($mail, $pass)) {
-            $user           = $this->getUserInfo($mail);
+        if (!empty($subm) && $this->authCorrect($post)) {
+            $user           = $this->getUserInfo($post['email']);
             $user['UNAME']  = $user['lastname'] . ' ' . $user['firstname'] . ' ' . $user['patronymic'];
 
             // Устанавливаем coockie с данными пользователя
@@ -82,7 +74,7 @@ class JF_Users {
             // Меняем дату последнего посещения
             $this->db_instance->query(
                     'UPDATE users_site SET date_lastvisit=%s WHERE email=%s LIMIT 1',
-                    array(date('Y-m-d H:i:s'), $mail)
+                    array(date('Y-m-d H:i:s'), $post['email'])
             );
         }
 
@@ -107,21 +99,6 @@ class JF_Users {
      */
     public function already_login() {
         return (isset($_SESSION['USER']['uid']) || (isset($_COOKIE['UID']) && isset($_COOKIE['email'])));
-    }
-
-    /**
-     * Функция проверки наличия аккаунта в БД по определённой паре "поле -> значение"
-     *
-     * @param $field - поле
-     * @param $value - значение
-     *
-     * @return bool
-     */
-    private function isAlreadyRegisteredBy($field, $value) {
-        $rez = $this->db_instance->query('SELECT * FROM users_site WHERE ' . $field . '=%s limit 1', $value);
-
-        // проверка на существование в БД такого же логина
-        return (count($rez) != 0);
     }
 
     /**
@@ -210,25 +187,43 @@ class JF_Users {
     }
 
     /**
-     * Функция проверки корректности введённых данных авторизации
+     * Функция проверки наличия аккаунта в БД по определённой паре "поле -> значение"
+     *
+     * @param $field - поле
+     * @param $value - значение
+     *
      * @return bool
      */
-    private function authCorrect($mail, $pass) {
+    private function isAlreadyRegisteredBy($field, $value) {
+        $rez = $this->db_instance->query('SELECT * FROM users_site WHERE ' . $field . '=%s limit 1', $value);
+
+        // проверка на существование в БД такого же логина
+        return (count($rez) != 0);
+    }
+
+    /**
+     * Функция проверки корректности введённых данных авторизации
+     *
+     * @param $post
+     *
+     * @return bool
+     */
+    private function authCorrect($post) {
         $result = '';
 
-        if ($mail == "") { $result .= 'Пустой E-Mail<br />'; }   // не пусто ли поле логина
-        if ($pass == "") { $result .= 'Пустой пароль<br />'; }    // не пусто ли поле пароля
+        if ($post['email'] == "")   { $result .= 'Пустой E-Mail<br />'; }   // не пусто ли поле e-mail
+        if ($post['pass'] == "")    { $result .= 'Пустой пароль<br />'; }    // не пусто ли поле пароля
 
         // не меньше ли 5 символов длина пароля
-        if (strlen($pass) < 5 && empty($pass)) { $result .= 'Пароль меньше 5 символов<br />'; }
+        if (strlen($post['pass']) < 5 && empty($post['pass'])) { $result .= 'Пароль меньше 5 символов<br />'; }
 
-        $rez = $this->db_instance->query('SELECT password, salt FROM users_site WHERE email=%s AND blocked="0" LIMIT 1', $mail);
+        $rez = $this->db_instance->query('SELECT password, salt FROM users_site WHERE email=%s AND blocked="0" LIMIT 1', $post['email']);
 
         // проверка на существование в БД такого же логина
         if (count($rez) == 0) { $result .= 'Такого пользователя нет<br />'; }
 
         foreach ($rez as $k => $v) {
-            if (hash('sha512', hash('sha512', $pass) . $rez['salt']) != $rez['password']) { $result .= 'Невереная пара Логин/Пароль<br />'; }
+            if (hash('sha512', hash('sha512', $post['pass']) . $rez['salt']) != $rez['password']) { $result .= 'Невереная пара Логин/Пароль<br />'; }
         }
 
         return ($result == ''); // если выполнение функции дошло до этого места, возвращаем true
@@ -243,21 +238,43 @@ class JF_Users {
     private function registrationCorrect(&$post) {
         $result = '';
 
-        if ($post['reg_nickname'] == "")    { $result .= 'Пустое поле логина<br />'; }               // не пусто ли поле логина
-        if ($post['reg_email'] == "")       { $result .= 'Пустое поле e-mail<br />'; }               // не пусто ли поле логина
-        if ($post['reg_pass'] == "")        { $result .= 'Пустое поле пароля<br />'; }               // не пусто ли поле пароля
-        if ($post['reg_accept'] != "ok")    { $result .= 'Не приняты условия регистрации<br />'; }   // приняты ли правила
+        if ($post['nickname'] == "")    { $result .= 'Пустое поле логина<br />'; }               // не пусто ли поле логина
+        if ($post['email'] == "")       { $result .= 'Пустое поле e-mail<br />'; }               // не пусто ли поле e-mail
+        if ($post['pass'] == "")        { $result .= 'Пустое поле пароля<br />'; }               // не пусто ли поле пароля
+        if ($post['accept'] != "ok")    { $result .= 'Не приняты условия регистрации<br />'; }   // приняты ли правила
 
         // соответствует ли поле e-mail регулярному выражению
-        if (!preg_match('/^([a-z0-9])(\w|[.]|-|_)+([a-z0-9])@([a-z0-9])([a-z0-9.-]*)([a-z0-9])([.]{1})([a-z]{2,4})$/is', $post['reg_email']))   { $result .= 'Некорректный e-mail<br />'; }
+        if (!preg_match('/^([a-z0-9])(\w|[.]|-|_)+([a-z0-9])@([a-z0-9])([a-z0-9.-]*)([a-z0-9])([.]{1})([a-z]{2,4})$/is', $post['email']))   { $result .= 'Некорректный e-mail<br />'; }
         // соответствует ли Фамилия регулярному выражению
-        if (!preg_match('/^([а-яА-Яa-zA-Z0-9\w-_.\\/ \'"]+)$/is', $post['reg_nickname']))   { $result .= 'Некорректный логин<br />'; }
+        if (!preg_match('/^([а-яА-Яa-zA-Z0-9\w-_.\\/ \'"]+)$/is', $post['nickname']))   { $result .= 'Некорректный логин<br />'; }
 
-        if (strlen($post['reg_pass']) < 5 && empty($post['reg_pass']))                  { $result .= 'Длина пароля менее 5 символов<br />'; }  // не меньше ли 5 символов длина пароля
+        if (strlen($post['pass']) < 5 && empty($post['pass']))                  { $result .= 'Длина пароля менее 5 символов<br />'; }  // не меньше ли 5 символов длина пароля
 
         if ($result == '') {
-            if ($this->isAlreadyRegisteredBy('email', $post['reg_email']))          { $result .= 'Аккаунт с таким e-mail уже зарегистрирован!<br />'; }
-            if ($this->isAlreadyRegisteredBy('nickname', $post['reg_nickname']))    { $result .= 'Аккаунт с таким логином уже зарегистрирован!<br />'; }
+            if ($this->isAlreadyRegisteredBy('email', $post['email']))          { $result .= 'Аккаунт с таким e-mail уже зарегистрирован!<br />'; }
+            if ($this->isAlreadyRegisteredBy('nickname', $post['nickname']))    { $result .= 'Аккаунт с таким логином уже зарегистрирован!<br />'; }
+        }
+
+        echo $result;
+        return ($result == ''); // если выполнение функции дошло до этого места, возвращаем true
+    }
+
+    /**
+     * Функция проверки корректности введённых данных активации
+     * @param $post - ссылка на массив активационных данных
+     *
+     * @return bool
+     */
+    private function activationCorrect(&$post) {
+        $result = '';
+
+        if ($post['email'] == "") { $result .= 'Пустое поле e-mail<br />'; }               // не пусто ли поле e-mail
+
+        // соответствует ли поле e-mail регулярному выражению
+        if (!preg_match('/^([a-z0-9])(\w|[.]|-|_)+([a-z0-9])@([a-z0-9])([a-z0-9.-]*)([a-z0-9])([.]{1})([a-z]{2,4})$/is', $post['email']))   { $result .= 'Некорректный e-mail<br />'; }
+
+        if ($result == '') {
+            if (!$this->isAlreadyRegisteredBy('email', $post['email'])) { $result .= 'Аккаунт с таким e-mail не зарегистрирован!<br />'; }
         }
 
         echo $result;
@@ -311,34 +328,33 @@ class JF_Users {
      *
      * @param $mail
      */
-    private function activationSend($mail) {
-        $user = $this->db_instance->query('SELECT us.email, us.activate_hash, us.activated, us.date_expires, us.nickname, us.blocked FROM users_site us WHERE us.email=%s LIMIT 1', func_get_arg(0));
+    public function activationSend($subm, $post) {
+        if (!empty($subm) && empty($post['faked_email']) && $this->activationCorrect($post)) {
+            $user = $this->db_instance->query('SELECT us.email, us.activate_hash, us.activated, us.date_expires, us.nickname, us.blocked FROM users_site us WHERE us.email=%s LIMIT 1', $post['email']);
 
-        if ($user['blocked'] == 0) {
-            $from       = 'activation@jaroflame.ru';
-            $subject    = "Подтверждение регистрации";
-            $message    = $user['nickname'] . '<br />' .
-                'Вы зарегистрировались на сайте КИР "Яро пламя"!<br />' .
-                'По ссылке вы можете подтвердить свой аккаунт: http://jaroflame/modules/users/activation/action.php?hash=' . $user['activate_hash'];
+            if ($user['blocked'] == 0) {
+                $from    = 'activation@jaroflame.ru';
+                $subject = "Подтверждение регистрации";
+                $message = $user['nickname'] . '<br />' .
+                    'Вы зарегистрировались на сайте КИР "Яро пламя"!<br />' .
+                    'По ссылке вы можете подтвердить свой аккаунт: http://' . $_SERVER['SERVER_NAME'] . '/modules/users/activation/action.php?hash=' . $user['activate_hash'];
 
-            // отправляем письмо
-            if (!mail($user['email'], $subject, $message, 'From: ' . $from)) {
-                echo '<a href="../registration_form.php">Вы не правильно указали почту.</a>';
+                // отправляем письмо
+                return mail($user['email'], $subject, $message, 'From: ' . $from);
             } else {
-                echo '<a href="/">На указанный почтовый ящик отправлено письмо с ссылкой для активации вашего личного кабинета.</a>';
+                return 'blocked';
             }
+        } else {
+            return false;
         }
     }
 
     public function activation($hash) {
-        // TODO: Дописать модуль автоудаления. CRON?
-        // TODO: Писать в лог результат выполнения
-
         if (!empty($hash)) {
-            $result = $this->db_instance->query('SELECT id FROM users_site WHERE activate_hash=%s LIMIT 1', $hash);
+            $result = $this->db_instance->query('SELECT id, blocked FROM users_site WHERE activate_hash=%s LIMIT 1', $hash);
 
-            // если хеш код найден, то активируем пользователя - set user_status = true и очищаем его user_hash
-            if (count($result) > 0) {
+            // если хеш найден и аккаунт не блокирован, то активируем пользователя и очищаем его activate_hash
+            if (count($result) > 0 && $result['blocked'] == 0) {
                 $date_exp = new DateTime;
                 $date_exp->modify('+100 years');
                 $date_exp = $date_exp->format('Y-m-d H:i:s');
@@ -346,7 +362,7 @@ class JF_Users {
                 $this->db_instance->query('UPDATE users_site SET activated = 1, activate_hash = "", date_expires = %s WHERE activate_hash = %s', array($date_exp, $hash));
                 // Учетная запись активирована. Вернуться на главную.
             } else {
-                // Активация: не найдено соответствующего хеша активации
+                // Активация: не найдено соответствующего хеша активации / аккаунт блокирован
                 return false;
             }
         } else {

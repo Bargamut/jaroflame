@@ -6,7 +6,12 @@
  */
 include_once($_SERVER['DOCUMENT_ROOT'] . '/top.php');
 
-$_SESSION['USER'] = $USER->auth($_POST['auth_subm'], $_POST['auth_email'], $_POST['auth_pass']);
+$post = array(
+    'email'         => $_POST['auth_email'],
+    'pass'          => $_POST['auth_pass']
+);
+
+$_SESSION['USER'] = $USER->auth($_POST['auth_subm'], $post);
 
 // Перенаправляем на главную
 if (!empty($_SESSION['USER'])) { header('Location: http://' . $_SERVER['SERVER_NAME']); }

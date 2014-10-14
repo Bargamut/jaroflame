@@ -11,13 +11,12 @@ include_once(SITE_ROOT . '/common.php');
 include_once(SITE_ROOT . '/header.php');
 include_once(SITE_ROOT . '/footer.php');
 
-$result_tpl = 'pages/activation.tpl';
+$result_tpl = 'pages/reports/activation.tpl';
 
-// TODO: добавить проверку на реферера, чтобы домен совпадал с адресом мейла?
 if ($USER->activation($_GET['hash'])) {
     $SMARTY->assign('header', 'Ваш аккаунт активирован!');
     $SMARTY->assign('desc', 'В течение 3 секунд вы будете перернаправлены на главную страницу.');
-    $SMARTY->assign('link', '/');
+    $SMARTY->assign('link', array('href' => '/', 'title' => 'Главная страница'));
 } else {
     $SMARTY->assign('error', $ERRORS[404]);
 

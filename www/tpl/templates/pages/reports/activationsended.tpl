@@ -5,7 +5,6 @@
 	<title>{$title}</title>
 
 	<meta charset="utf-8" />
-	<meta http-equiv="refresh" content="3; url=/">
 
 	<link rel="stylesheet" href="/include/css/default.css" />
 	<link rel="stylesheet" href="/include/css/users.css" />
@@ -17,14 +16,14 @@
 
 <body>
 	<div class="main ">
-		{include file="../commons/header.tpl"}
+		{include file="../../commons/header.tpl"}
 		<div class="content">
 			<h2>{$header}</h2>
 			<p>{$desc}</p>
-			<a href="{$link}">Главная страница</a>
+			<a href="{$link.href}">{$link.title}</a>
 		</div>
 		<div class="push"></div>
 	</div>
-	{include file="../commons/footer.tpl"}
+	{include file="../../commons/footer.tpl"}
 </body>
 </html>

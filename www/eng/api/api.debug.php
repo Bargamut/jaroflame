@@ -21,7 +21,7 @@ class JF_Debug {
     *
     * @return string
     */
-    public function dump($expression, $header) {
+    public static function dump($expression, $header) {
         $result = '<div class="debug"><h2>' . '(' . gettype($expression) . ') ' . $header . '</h2>Длина: ' . count($expression) . ' <br /><pre class="dump">';
 
         if (is_array($expression))      { $result .= print_r($expression, true); }

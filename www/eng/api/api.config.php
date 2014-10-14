@@ -18,8 +18,6 @@ class JF_Config {
      * При создании объекта парсим все доступные конфиги
      */
     private function __construct() {
-        // TODO: подумать над подключением неизвестного числа конфигов
-        // TODO: сделать установщик движка, с первоначальной генерацией Конфига
         $this->settings = parse_ini_file(SITE_ROOT . '/eng/conf/core.ini', true);
     }
 
@@ -126,8 +124,6 @@ class JF_Config {
         $this->sanitize($options);
 
         foreach ($options as $section => $opts) {
-            // TODO: подумать над добавлением, если нет секции
-            // TODO: подумать над неприкосновенностью опредедённых настроек конфига
             if (!array_key_exists($section, $this->settings)) { continue; }
 
             foreach ($opts as $k => $v) {
@@ -144,7 +140,6 @@ class JF_Config {
      * @return mixed
      */
     private function sanitize(&$options) {
-        // TODO: подумать над фильтрацией данных
         return $options;
     }
 
