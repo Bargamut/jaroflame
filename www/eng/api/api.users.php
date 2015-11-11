@@ -26,7 +26,7 @@ class JF_Users {
             $salt       = $this->generateRandString(250);                               // Генерим "соль"
             $date_reg   = date('Y-m-d H:i:s');                                          // Дата регистрации
             $date_exp   = date('Y-m-d H:i:s', strtotime('+7 days'));                    // Дата автоудаления неподтверждённого аккаунта - 7 дней
-            $password   = hash('sha512', hash('sha512', $post['pass']) . $salt);    // Шифруем пароль
+            $password   = hash('sha512', hash('sha512', $post['pass']) . $salt);        // Шифруем пароль
             $token      = hash('sha512', uniqid(rand(), 1));                            // UID
             $token_act  = hash('sha512', uniqid(rand(), 1));                            // Код активации
 

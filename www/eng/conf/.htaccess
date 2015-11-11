@@ -1,4 +1,4 @@
-<Files *.inc>
+<Files *.ini>
     Order deny,allow
     Deny from all
 </Files>
